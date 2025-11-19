@@ -10,9 +10,9 @@ export const blogApi = {
     try {
       const { page = 1, limit = 10, category, tag, search } = params;
       let url = `/blogs?page=${page}&limit=${limit}`;
-      if (category) url += `&category=${category}`;
-      if (tag) url += `&tag=${tag}`;
-      if (search) url += `&search=${encodeURIComponent(search)}`;
+      // if (category) url += `&category=${category}`;
+      // if (tag) url += `&tag=${tag}`;
+      // if (search) url += `&search=${encodeURIComponent(search)}`;
 
       const response = await apiClient.get(url);
       return response;
@@ -25,8 +25,10 @@ export const blogApi = {
   // Get Blog by ID or Slug
   getBlogByIdOrSlug: async (identifier) => {
     try {
-      const response = await apiClient.get(`/blogs/${identifier}`);
-      return response;
+      // FIX: add slash before identifier
+      const response = await apiClient.get(`/blogs/id/${identifier}`);
+
+      return response.data; // returns the blog object
     } catch (error) {
       console.error('❌ Get Blog Error:', error);
       throw error;

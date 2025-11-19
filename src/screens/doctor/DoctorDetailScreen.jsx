@@ -63,9 +63,6 @@ const DoctorDetailScreen = ({ route, navigation }) => {
           <Ionicons name="chevron-back" size={24} color={colors.textPrimary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Doctor Profile</Text>
-        <TouchableOpacity style={styles.addButton}>
-          <Ionicons name="add" size={24} color={colors.white} />
-        </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
@@ -258,7 +255,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_500Medium',
   },
   ratingContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 4,
   },

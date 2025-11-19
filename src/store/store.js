@@ -12,7 +12,7 @@ import dashboardReducer from './slices/dashboardSlice';
 import searchReducer from './slices/searchSlice';
 import notificationReducer from './slices/notificationSlice';
 import blogReducer from './slices/blogSlice'; // ADD THIS
-
+import educationalContentReducer from './slices/educationalContentSlice';
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -24,6 +24,7 @@ const store = configureStore({
     search: searchReducer,
     notification: notificationReducer,
     blog: blogReducer, // ADD THIS
+    educationalContent: educationalContentReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

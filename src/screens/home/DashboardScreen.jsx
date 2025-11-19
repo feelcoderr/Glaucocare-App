@@ -208,7 +208,11 @@ const DashboardScreen = ({ navigation }) => {
         onPress={() => navigation.navigate('EventDetail', { eventId: event._id })}>
         <View style={styles.eventContent}>
           <Image
-            source={{ uri: event.featuredImage || 'https://via.placeholder.com/100' }}
+            source={{
+              uri:
+                event.featuredImage ||
+                'https://res.cloudinary.com/datgoelws/image/upload/v1762163345/camp_image_d8yztk.jpg',
+            }}
             style={styles.eventImage}
           />
           <View style={styles.eventInfo}>
@@ -223,7 +227,7 @@ const DashboardScreen = ({ navigation }) => {
             </Text>
             <View style={styles.eventContact}>
               <Ionicons name="call-outline" size={14} color={colors.textSecondary} />
-              <Text style={styles.eventContactText}>+91 4521875963</Text>
+              <Text style={styles.eventContactText}>+91 9821875963</Text>
             </View>
           </View>
         </View>

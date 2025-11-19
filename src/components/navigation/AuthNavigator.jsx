@@ -1,5 +1,5 @@
 // FILE: src/components/navigation/AuthNavigator.jsx
-// FIXED Auth Navigator - Dashboard Moved to AppNavigator
+// FIXED Auth Navigator - Removed TabNavigator reference
 // ============================================================================
 
 import React from 'react';
@@ -10,8 +10,7 @@ import LanguageSelectionScreen from '../../screens/auth/LanguageSelectionScreen'
 import LoginScreen from '../../screens/auth/LoginScreen';
 import RegistrationScreen from '../../screens/auth/RegistrationScreen';
 import NotificationPermissionScreen from '../../screens/auth/NotificationPermissionScreen';
-import HomeScreen from '../../screens/home/DashboardScreen';
-import TabNavigator from './TabNavigator';
+
 const Stack = createStackNavigator();
 
 const AuthNavigator = () => {
@@ -28,7 +27,6 @@ const AuthNavigator = () => {
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Registration" component={RegistrationScreen} />
       <Stack.Screen name="NotificationPermission" component={NotificationPermissionScreen} />
-      <Stack.Screen name="Home" component={TabNavigator} />
     </Stack.Navigator>
   );
 };

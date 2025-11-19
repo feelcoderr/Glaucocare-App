@@ -14,17 +14,24 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
-import { sendOTP, verifyOTP, clearError, clearOTPSent } from '../../store/slices/authSlice';
+import {
+  sendOTP,
+  verifyOTP,
+  clearError,
+  clearOTPSent,
+  loginAsGuest,
+  guestLogin,
+} from '../../store/slices/authSlice';
 import { colors } from '../../styles/colors';
 import { Image } from 'react-native';
-
+import getDeviceId from '../../services/utils/getDeviceId';
 const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const { isLoading, error, otpSent, requiresRegistration, isAuthenticated } = useSelector(
     (state) => state.auth
   );
-
   const [mobile, setMobile] = useState('');
+  const [isGuestLoading, setIsGuestLoading] = useState(false);
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -90,10 +97,27 @@ const LoginScreen = ({ navigation }) => {
     dispatch(verifyOTP({ mobile, otp: otpCode, rememberMe }));
   };
 
-  const handleSkip = () => {
-    // Guest mode - navigate to dashboard without auth
-    navigation.navigate('Home');
+  const handleGuestLogin = async () => {
+    setIsGuestLoading(true);
+    try {
+      // Get device ID (optional)
+      const deviceId = await getDeviceId(); // You can use expo-device
+
+      await dispatch(guestLogin(deviceId)).unwrap();
+
+      // Navigate to main app
+      navigation.replace('MainTabs');
+    } catch (error) {
+      alert(error.message || 'Guest login failed');
+    } finally {
+      setIsGuestLoading(false);
+    }
   };
+
+  // const handleSkip = () => {
+  //   // Guest mode - navigate to dashboard without auth
+  //   navigation.navigate('Home');
+  // };
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
@@ -194,7 +218,7 @@ const LoginScreen = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity onPress={handleSkip}>
+              <TouchableOpacity onPress={handleGuestLogin}>
                 <Text style={styles.skipText}>Skip for now</Text>
               </TouchableOpacity>
             </View>

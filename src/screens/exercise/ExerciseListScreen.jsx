@@ -8,63 +8,40 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../styles/colors';
 
+import { useNavigation } from '@react-navigation/native';
+import PeripheralPopScreen from './PeripheralPopScreen';
+import LetterHuntScreen from './LetterHuntScreen';
+import ClockSweepScreen from './ClockSweepScreen';
+
 // Static Data
 const EXERCISES_AND_GAMES = [
   {
     id: '1',
-    title: 'Blink Training',
+    title: 'Peripheral Pops',
     type: 'Exercise',
     level: 'Beginner',
-    icon: 'https://via.placeholder.com/60',
+    icon: 'https://res.cloudinary.com/datgoelws/image/upload/v1762162971/eye-icon_maa0eg.png',
   },
   {
     id: '2',
     title: 'Focus Tracker',
-    type: 'Game',
+    type: 'Exercise',
     level: 'Intermediate',
-    icon: 'https://via.placeholder.com/60',
+    icon: 'https://res.cloudinary.com/datgoelws/image/upload/v1762162971/eye-icon_maa0eg.png',
   },
   {
     id: '3',
     title: 'Eye Movement Guide',
     type: 'Exercise',
     level: 'Beginner',
-    icon: 'https://via.placeholder.com/60',
+    icon: 'https://res.cloudinary.com/datgoelws/image/upload/v1762162971/eye-icon_maa0eg.png',
   },
   {
     id: '4',
     title: 'Color Spot Challenge',
-    type: 'Exercise',
-    level: 'Beginner',
-    icon: 'https://via.placeholder.com/60',
-  },
-  {
-    id: '5',
-    title: 'Visual Memory Grid',
     type: 'Game',
-    level: 'Advanced',
-    icon: 'https://via.placeholder.com/60',
-  },
-  {
-    id: '6',
-    title: 'Pattern Recognition',
-    type: 'Game',
-    level: 'Intermediate',
-    icon: 'https://via.placeholder.com/60',
-  },
-  {
-    id: '7',
-    title: 'Near-Far Focus',
-    type: 'Exercise',
     level: 'Beginner',
-    icon: 'https://via.placeholder.com/60',
-  },
-  {
-    id: '8',
-    title: 'Eye Relaxation',
-    type: 'Exercise',
-    level: 'Beginner',
-    icon: 'https://via.placeholder.com/60',
+    icon: 'https://res.cloudinary.com/datgoelws/image/upload/v1762162971/eye-icon_maa0eg.png',
   },
 ];
 
@@ -125,23 +102,31 @@ const ExerciseListScreen = ({ navigation }) => {
         <Text style={styles.exerciseTitle}>{item.title}</Text>
         <View style={styles.exerciseMeta}>
           <Text style={styles.exerciseType}>{item.type}</Text>
-          <View style={styles.levelDot} />
-          <Text style={[styles.exerciseLevel, { color: getLevelColor(item.level) }]}>
+          {/* <View style={styles.levelDot} /> */}
+          {/* <Text style={[styles.exerciseLevel, { color: getLevelColor(item.level) }]}>
             {item.level}
-          </Text>
+          </Text> */}
         </View>
       </View>
 
       {/* Play Button */}
-      <TouchableOpacity
-        style={styles.playButton}
-        onPress={() => {
-          alert(`${item.title} - Coming Soon!`);
-        }}>
+      <TouchableOpacity style={styles.playButton} onPress={() => handlePlayPress(item)}>
         <Text style={styles.playButtonText}>Play</Text>
       </TouchableOpacity>
     </TouchableOpacity>
   );
+
+  const handlePlayPress = (item) => {
+    if (item.id === '1') {
+      navigation.navigate('PeripheralPopScreen');
+    } else if (item.id === '2') {
+      navigation.navigate('LetterHuntScreen');
+    } else if (item.id === '3') {
+      navigation.navigate('ClockSweepScreen');
+    } else {
+      alert(`${item.title} - Coming Soon!`);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>

@@ -20,21 +20,25 @@ import { fetchBlogById, clearSelectedBlog } from '../../store/slices/blogSlice';
 import { colors } from '../../styles/colors';
 
 const BlogDetailScreen = ({ route, navigation }) => {
-  const { blogId, slug } = route.params;
+  const { blogId, slug } = route.params || {};
   const dispatch = useDispatch();
-  const { selectedBlog, isLoading } = useSelector((state) => state.blog);
-
+  console.log(blogId);
   useEffect(() => {
-    const identifier = slug || blogId;
-    dispatch(fetchBlogById(identifier));
+    const identifier = blogId || slug;
+    if (identifier) {
+      dispatch(fetchBlogById(identifier));
+    }
 
     return () => {
       dispatch(clearSelectedBlog());
     };
-  }, [blogId, slug]);
+  }, [blogId, slug, dispatch]);
+  const { selectedBlog, isLoading } = useSelector((state) => state.blog);
 
   const formatDate = (dateString) => {
+    if (!dateString) return '';
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
     return date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
@@ -45,8 +49,8 @@ const BlogDetailScreen = ({ route, navigation }) => {
   const handleShare = async () => {
     try {
       await Share.share({
-        message: `Check out this article: ${selectedBlog?.title}`,
-        url: `https://glaucocare.in/blog/${selectedBlog?.slug}`,
+        message: `Check out this article: ${selectedBlog?.title || ''}`,
+        url: `https://glaucocare.in/blog/${selectedBlog?.slug || ''}`,
       });
     } catch (error) {
       console.error('Share error:', error);
@@ -61,11 +65,28 @@ const BlogDetailScreen = ({ route, navigation }) => {
     );
   }
 
+  // Show friendly message if no blog found
   if (!selectedBlog) {
     return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>Blog not found</Text>
-      </View>
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Ionicons name="chevron-back" size={24} color={colors.textPrimary} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Blog</Text>
+          <View style={styles.shareButton} />
+        </View>
+
+        <View style={styles.notFoundContainer}>
+          <Text style={styles.notFoundTitle}>Blog not found</Text>
+          <Text style={styles.notFoundSubtitle}>
+            The article you are looking for may have been removed or is unavailable.
+          </Text>
+          <TouchableOpacity style={styles.goBackButton} onPress={() => navigation.goBack()}>
+            <Text style={styles.goBackText}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
     );
   }
 

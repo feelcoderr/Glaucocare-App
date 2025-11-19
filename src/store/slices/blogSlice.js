@@ -22,8 +22,10 @@ export const fetchBlogById = createAsyncThunk(
   'blog/fetchById',
   async (identifier, { rejectWithValue }) => {
     try {
-      const response = await blogApi.getBlogByIdOrSlug(identifier);
-      return response.data;
+      // blogApi.getBlogByIdOrSlug SHOULD return the blog object (response.data.data)
+      const blog = await blogApi.getBlogByIdOrSlug(identifier);
+      // return the blog object directly so action.payload === blog
+      return blog;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }

@@ -19,7 +19,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import { fetchUserDocuments, uploadDocument } from '../../store/slices/documentSlice';
 import { colors } from '../../styles/colors';
-
+import { Alert, Platform } from 'react-native';
 const DocumentDashboardScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const { documentsByType, isLoading, isUploading } = useSelector((state) => state.document);
@@ -88,61 +88,139 @@ const DocumentDashboardScreen = ({ navigation }) => {
     navigation.navigate('DocumentList', { documentType: type });
   };
 
+  // ✅ FIXED: Updated for new ImagePicker API
   const handlePickImage = async () => {
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== 'granted') {
-      alert('Camera permission is required');
-      return;
-    }
+    try {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
 
-    const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 0.8,
-    });
+      if (status !== 'granted') {
+        Alert.alert('Permission Required', 'Camera permission is required to take photos');
+        return;
+      }
 
-    if (!result.canceled) {
-      setUploadForm({ ...uploadForm, file: result.assets[0] });
-    }
-  };
-
-  const handlePickDocument = async () => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type: ['application/pdf', 'image/jpeg', 'image/png'],
-      copyToCacheDirectory: true,
-    });
-
-    if (result.type === 'success') {
-      setUploadForm({ ...uploadForm, file: result });
-    }
-  };
-
-  const handleUpload = () => {
-    if (!uploadForm.title || !uploadForm.documentType || !uploadForm.file) {
-      alert('Please fill all fields and select a file');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('document', {
-      uri: uploadForm.file.uri,
-      type: uploadForm.file.mimeType || uploadForm.file.type || 'image/jpeg',
-      name: uploadForm.file.name || 'document.jpg',
-    });
-    formData.append('title', uploadForm.title);
-    formData.append('documentType', uploadForm.documentType);
-    formData.append('documentDate', new Date().toISOString().split('T')[0]);
-
-    dispatch(uploadDocument(formData))
-      .unwrap()
-      .then(() => {
-        alert('Document uploaded successfully');
-        setShowUploadModal(false);
-        setUploadForm({ title: '', documentType: '', file: null });
-        dispatch(fetchUserDocuments({ page: 1, limit: 100 }));
-      })
-      .catch((error) => {
-        alert(error.message || 'Upload failed');
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 0.8,
+        allowsEditing: true,
       });
+
+      console.log('📸 Image picker result:', result);
+
+      // ✅ FIXED: Use result.canceled (not result.cancelled)
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const asset = result.assets[0];
+
+        // ✅ FIXED: Create proper file object
+        const file = {
+          uri: asset.uri,
+          name: `photo_${Date.now()}.jpg`,
+          type: 'image/jpeg',
+          size: asset.fileSize || 0,
+        };
+
+        console.log('✅ Image selected:', file);
+        setUploadForm({ ...uploadForm, file });
+      }
+    } catch (error) {
+      console.error('❌ Image picker error:', error);
+      Alert.alert('Error', 'Failed to pick image: ' + error.message);
+    }
+  };
+
+  // ✅ FIXED: Updated for new DocumentPicker API
+  const handlePickDocument = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'],
+        copyToCacheDirectory: true,
+        multiple: false,
+      });
+
+      console.log('📄 Document picker result:', result);
+
+      // ✅ FIXED: New API uses result.canceled (not result.type === 'success')
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const asset = result.assets[0];
+
+        // ✅ FIXED: Create proper file object with all needed properties
+        const file = {
+          uri: asset.uri,
+          name: asset.name,
+          type: asset.mimeType || getMimeType(asset.name),
+          size: asset.size,
+        };
+
+        console.log('✅ Document selected:', file);
+        setUploadForm({ ...uploadForm, file });
+      } else {
+        console.log('📄 Document picker canceled');
+      }
+    } catch (error) {
+      console.error('❌ Document picker error:', error);
+      Alert.alert('Error', 'Failed to pick document: ' + error.message);
+    }
+  };
+
+  // ✅ NEW: Helper to determine MIME type from filename
+  const getMimeType = (filename) => {
+    const extension = filename.split('.').pop().toLowerCase();
+    const mimeTypes = {
+      pdf: 'application/pdf',
+      jpg: 'image/jpeg',
+      jpeg: 'image/jpeg',
+      png: 'image/png',
+    };
+    return mimeTypes[extension] || 'application/octet-stream';
+  };
+
+  // ✅ FIXED: Improved upload handler with validation
+  const handleUpload = async () => {
+    try {
+      console.log('=== UPLOAD VALIDATION ===');
+      console.log('Title:', uploadForm.title);
+      console.log('Type:', uploadForm.documentType);
+      console.log('File:', uploadForm.file);
+
+      // Validation
+      if (!uploadForm.title || !uploadForm.documentType || !uploadForm.file) {
+        Alert.alert('Missing Information', 'Please fill all fields and select a file');
+        return;
+      }
+
+      // ✅ FIXED: Create FormData properly
+      const formData = new FormData();
+
+      // ✅ CRITICAL: iOS file URI needs special handling
+      formData.append('document', {
+        uri:
+          Platform.OS === 'ios' ? uploadForm.file.uri.replace('file://', '') : uploadForm.file.uri,
+        type: uploadForm.file.type,
+        name: uploadForm.file.name,
+      });
+
+      formData.append('title', uploadForm.title);
+      formData.append('documentType', uploadForm.documentType);
+      formData.append('documentDate', new Date().toISOString().split('T')[0]);
+
+      console.log('📤 Uploading with FormData...');
+      console.log('- Title:', uploadForm.title);
+      console.log('- Type:', uploadForm.documentType);
+      console.log('- File URI:', uploadForm.file.uri);
+      console.log('- File Type:', uploadForm.file.type);
+      console.log('- File Name:', uploadForm.file.name);
+
+      const result = await dispatch(uploadDocument(formData)).unwrap();
+
+      console.log('✅ Upload successful:', result);
+
+      Alert.alert('Success', 'Document uploaded successfully');
+      setShowUploadModal(false);
+      setUploadForm({ title: '', documentType: '', file: null });
+      dispatch(fetchUserDocuments({ page: 1, limit: 100 }));
+    } catch (error) {
+      console.error('❌ Upload error:', error);
+      Alert.alert('Upload Failed', error.message || 'Failed to upload document');
+    }
   };
 
   if (!isAuthenticated) {

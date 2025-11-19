@@ -24,7 +24,7 @@ const DoctorListScreen = ({ navigation }) => {
   const { doctors, isLoading, filters, pagination } = useSelector((state) => state.doctor);
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [location, setLocation] = useState('New York, NY');
+  const [location, setLocation] = useState('Ahmedabad, Gujarat');
 
   useEffect(() => {
     dispatch(fetchDoctors(filters));
@@ -48,11 +48,6 @@ const DoctorListScreen = ({ navigation }) => {
             <Text style={styles.doctorName}>{item.fullname}</Text>
             <Text style={styles.doctorSpecialty}>{item.specialty}</Text>
           </View>
-          <TouchableOpacity
-            style={styles.seeMoreButton}
-            onPress={() => navigation.navigate('DoctorDetail', { doctorId: item._id })}>
-            <Text style={styles.seeMoreText}>See More</Text>
-          </TouchableOpacity>
         </View>
 
         <View style={styles.hospitalInfo}>
@@ -63,6 +58,14 @@ const DoctorListScreen = ({ navigation }) => {
         <View style={styles.availabilityContainer}>
           <Text style={styles.availabilityLabel}>Availability Today:</Text>
           <Text style={styles.availabilityTime}>10:00 AM - 6:00 PM</Text>
+        </View>
+
+        <View style={styles.seeMoreContainer}>
+          <TouchableOpacity
+            style={styles.seeMoreButton}
+            onPress={() => navigation.navigate('DoctorDetail', { doctorId: item._id })}>
+            <Text style={styles.seeMoreText}>See More</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </TouchableOpacity>
@@ -197,7 +200,7 @@ const styles = StyleSheet.create({
   },
   doctorImage: {
     width: 100,
-    height: 120,
+    height: 'auto',
     borderRadius: 8,
     backgroundColor: '#E3F2FD',
   },
@@ -234,6 +237,7 @@ const styles = StyleSheet.create({
   },
   seeMoreText: {
     color: colors.white,
+    textAlign: 'center',
     fontSize: 12,
     fontWeight: '600',
     fontFamily: 'Poppins_600SemiBold',
@@ -251,9 +255,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   availabilityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: '',
+    alignItems: 'start',
   },
+
   availabilityLabel: {
     fontSize: 12,
     color: colors.textSecondary,
@@ -264,6 +269,9 @@ const styles = StyleSheet.create({
     color: '#10B981',
     fontFamily: 'Poppins_500Medium',
     marginLeft: 4,
+  },
+  seeMoreContainer: {
+    marginTop: 8,
   },
   loadingContainer: {
     flex: 1,

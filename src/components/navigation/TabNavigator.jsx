@@ -1,5 +1,5 @@
 // FILE: src/components/navigation/TabNavigator.jsx
-// UPDATED Bottom Tab Navigator
+// FIXED Bottom Tab Navigator
 // ============================================================================
 
 import React from 'react';
@@ -7,8 +7,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import DashboardScreen from '../../screens/home/DashboardScreen';
 import DoctorListScreen from '../../screens/doctor/DoctorListScreen';
-import BlogListScreen from '../../screens/blog/BlogLIstScreen'; // ADD THIS
+import BlogListScreen from '../../screens/blog/BlogLIstScreen';
+import DocumentDashboardScreen from '../../screens/documents/DocumentDashboardScreen';
+import SettingScreen from '../../screens/settings/SettingsScreen';
 import { colors } from '../../styles/colors';
+import GlaucomaGuideScreen from '../../screens/education/GlaucomaGuideScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -20,15 +23,15 @@ const TabNavigator = () => {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === 'Home') {
+          if (route.name === 'HomeTab') {
             iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Doctor') {
+          } else if (route.name === 'DoctorTab') {
             iconName = focused ? 'medical' : 'medical-outline';
-          } else if (route.name === 'Community') {
-            iconName = focused ? 'people' : 'people-outline';
-          } else if (route.name === 'Blog') {
+          } else if (route.name === 'GuideTab') {
+            iconName = focused ? 'eye' : 'eye-outline';
+          } else if (route.name === 'BlogTab') {
             iconName = focused ? 'newspaper' : 'newspaper-outline';
-          } else if (route.name === 'Profile') {
+          } else if (route.name === 'ProfileTab') {
             iconName = focused ? 'person' : 'person-outline';
           }
 
@@ -39,18 +42,34 @@ const TabNavigator = () => {
         tabBarStyle: {
           height: 60,
           paddingBottom: 8,
-          paddingTop: 16,
+          paddingTop: 8,
+          borderTopWidth: 1,
+          borderTopColor: '#E5E7EB',
+          backgroundColor: colors.white,
         },
         tabBarLabelStyle: {
           fontSize: 12,
           fontFamily: 'Poppins_500Medium',
         },
       })}>
-      <Tab.Screen name="Home" component={DashboardScreen} />
-      <Tab.Screen name="Doctor" component={DoctorListScreen} />
-      <Tab.Screen name="Community" component={DashboardScreen} />
-      <Tab.Screen name="Blog" component={BlogListScreen} />
-      <Tab.Screen name="Profile" component={DashboardScreen} />
+      {/* FIXED: Added 'Tab' suffix to avoid conflicts with Stack screens */}
+      <Tab.Screen name="HomeTab" component={DashboardScreen} options={{ tabBarLabel: 'Home' }} />
+      <Tab.Screen
+        name="DoctorTab"
+        component={DoctorListScreen}
+        options={{ tabBarLabel: 'Doctor' }}
+      />
+      <Tab.Screen
+        name="GuideTab"
+        component={GlaucomaGuideScreen}
+        options={{ tabBarLabel: 'Guide' }}
+      />
+      <Tab.Screen name="BlogTab" component={BlogListScreen} options={{ tabBarLabel: 'Blog' }} />
+      <Tab.Screen
+        name="ProfileTab"
+        component={SettingScreen}
+        options={{ tabBarLabel: 'Profile' }}
+      />
     </Tab.Navigator>
   );
 };

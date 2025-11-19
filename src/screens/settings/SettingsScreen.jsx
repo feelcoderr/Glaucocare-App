@@ -117,6 +117,12 @@ const SettingsScreen = ({ navigation }) => {
           {renderSettingItem('time-outline', 'Reminder Settings', () =>
             navigation.navigate('ReminderSettings')
           )}
+          {renderSettingItem('time-outline', 'Glaucoma Guide', () =>
+            navigation.navigate('GlaucomaGuide', { slug: 'glaucoma-guide' })
+          )}
+          {renderSettingItem('document-text', 'My document', () =>
+            navigation.navigate('DocumentDashboardScreen')
+          )}
         </View>
 
         {/* Support */}
