@@ -96,7 +96,7 @@ const DoctorListScreen = ({ navigation }) => {
       </View>
 
       {/* Location and Filter */}
-      <View style={styles.filterRow}>
+      {/* <View style={styles.filterRow}>
         <View style={styles.locationContainer}>
           <Ionicons name="location" size={18} color={colors.primaryDark} />
           <Text style={styles.locationText}>{location}</Text>
@@ -104,7 +104,7 @@ const DoctorListScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.filterButton}>
           <Ionicons name="options-outline" size={20} color={colors.textPrimary} />
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       {/* Doctors List */}
       {isLoading ? (

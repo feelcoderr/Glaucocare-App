@@ -36,9 +36,15 @@ export const verifyOTP = createAsyncThunk(
 
 export const completeRegistration = createAsyncThunk(
   'auth/completeRegistration',
-  async ({ fullname, email, languagePreference }, { rejectWithValue }) => {
+  async ({ fullname, email, languagePreference, dateOfBirth, gender }, { rejectWithValue }) => {
     try {
-      const response = await authApi.completeRegistration(fullname, email, languagePreference);
+      const response = await authApi.completeRegistration(
+        fullname,
+        email,
+        languagePreference,
+        dateOfBirth,
+        gender
+      );
 
       // Update stored user data
       await AsyncStorage.setItem('user', JSON.stringify(response.data.user));
@@ -349,3 +355,247 @@ const authSlice = createSlice({
 
 export const { setUser, clearOTPSent, resetAuth, loginAsGuest, clearError } = authSlice.actions;
 export default authSlice.reducer;
+
+// // src/store/slices/authSlice.js****************
+
+// // import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+// // import { authApi } from '../../api/authApi';
+// // import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// // Send OTP (Firebase) - Now just stores confirmation for verification
+// export const sendOTP = createAsyncThunk(
+//   'auth/sendOTP',
+//   async ({ mobile, recaptchaVerifier }, { rejectWithValue }) => {
+//     try {
+//       console.log('📤 Sending OTP...');
+//       const result = await authApi.sendFirebaseOTP(mobile, recaptchaVerifier);
+//       return { mobile, confirmationResult: result.confirmationResult };
+//     } catch (error) {
+//       console.error('❌ Send OTP Error:', error);
+//       return rejectWithValue(error.message || 'Failed to send OTP');
+//     }
+//   }
+// );
+
+// // Verify OTP and Login
+// export const verifyOTP = createAsyncThunk(
+//   'auth/verifyOTP',
+//   async ({ confirmationResult, otp, rememberMe }, { rejectWithValue }) => {
+//     try {
+//       console.log('🔐 Verifying OTP...');
+
+//       // Step 1: Verify with Firebase
+//       const firebaseResult = await authApi.verifyFirebaseOTP(confirmationResult, otp);
+
+//       // Step 2: Verify with backend
+//       const backendResponse = await authApi.verifyPhoneWithBackend(
+//         firebaseResult.idToken,
+//         rememberMe
+//       );
+
+//       // Store tokens
+//       if (backendResponse.data.accessToken) {
+//         await AsyncStorage.setItem('accessToken', backendResponse.data.accessToken);
+//         await AsyncStorage.setItem('refreshToken', backendResponse.data.refreshToken);
+//       }
+
+//       return backendResponse.data;
+//     } catch (error) {
+//       console.error('❌ Verify OTP Error:', error);
+//       return rejectWithValue(error.message || 'Invalid OTP');
+//     }
+//   }
+// );
+
+// // Google Login
+// export const googleLogin = createAsyncThunk(
+//   'auth/googleLogin',
+//   async ({ googleId, email, fullname, profilePicture }, { rejectWithValue }) => {
+//     try {
+//       const response = await authApi.googleLogin(googleId, email, fullname, profilePicture);
+
+//       if (response.data.accessToken) {
+//         await AsyncStorage.setItem('accessToken', response.data.accessToken);
+//         await AsyncStorage.setItem('refreshToken', response.data.refreshToken);
+//       }
+
+//       return response.data;
+//     } catch (error) {
+//       return rejectWithValue(error.response?.data?.message || 'Google login failed');
+//     }
+//   }
+// );
+
+// // Apple Login
+// export const appleLogin = createAsyncThunk(
+//   'auth/appleLogin',
+//   async ({ appleId, email, fullname }, { rejectWithValue }) => {
+//     try {
+//       const response = await authApi.appleLogin(appleId, email, fullname);
+
+//       if (response.data.accessToken) {
+//         await AsyncStorage.setItem('accessToken', response.data.accessToken);
+//         await AsyncStorage.setItem('refreshToken', response.data.refreshToken);
+//       }
+
+//       return response.data;
+//     } catch (error) {
+//       return rejectWithValue(error.response?.data?.message || 'Apple login failed');
+//     }
+//   }
+// );
+
+// // Guest Login
+// export const guestLogin = createAsyncThunk(
+//   'auth/guestLogin',
+//   async (deviceId, { rejectWithValue }) => {
+//     try {
+//       const response = await authApi.guestLogin(deviceId);
+
+//       if (response.data.accessToken) {
+//         await AsyncStorage.setItem('accessToken', response.data.accessToken);
+//         await AsyncStorage.setItem('refreshToken', response.data.refreshToken);
+//       }
+
+//       return response.data;
+//     } catch (error) {
+//       return rejectWithValue(error.response?.data?.message || 'Guest login failed');
+//     }
+//   }
+// );
+
+// const authSlice = createSlice({
+//   name: 'auth',
+//   initialState: {
+//     user: null,
+//     accessToken: null,
+//     refreshToken: null,
+//     isLoading: false,
+//     isAuthenticated: false,
+//     error: null,
+//     otpSent: false,
+//     confirmationResult: null, // Store Firebase confirmation
+//     requiresRegistration: false,
+//   },
+//   reducers: {
+//     clearError: (state) => {
+//       state.error = null;
+//     },
+//     clearOTPSent: (state) => {
+//       state.otpSent = false;
+//       state.confirmationResult = null;
+//     },
+//     logout: (state) => {
+//       state.user = null;
+//       state.accessToken = null;
+//       state.refreshToken = null;
+//       state.isAuthenticated = false;
+//       state.requiresRegistration = false;
+//       AsyncStorage.multiRemove(['accessToken', 'refreshToken']);
+//     },
+//     setUser: (state, action) => {
+//       state.user = action.payload;
+//       state.isAuthenticated = true;
+//     },
+//   },
+//   extraReducers: (builder) => {
+//     builder
+//       // Send OTP
+//       .addCase(sendOTP.pending, (state) => {
+//         state.isLoading = true;
+//         state.error = null;
+//       })
+//       .addCase(sendOTP.fulfilled, (state, action) => {
+//         state.isLoading = false;
+//         state.otpSent = true;
+//         state.confirmationResult = action.payload.confirmationResult;
+//         state.error = null;
+//       })
+//       .addCase(sendOTP.rejected, (state, action) => {
+//         state.isLoading = false;
+//         state.error = action.payload;
+//         state.otpSent = false;
+//       })
+
+//       // Verify OTP
+//       .addCase(verifyOTP.pending, (state) => {
+//         state.isLoading = true;
+//         state.error = null;
+//       })
+//       .addCase(verifyOTP.fulfilled, (state, action) => {
+//         state.isLoading = false;
+//         state.user = action.payload.user;
+//         state.accessToken = action.payload.accessToken;
+//         state.refreshToken = action.payload.refreshToken;
+//         state.isAuthenticated = true;
+//         state.requiresRegistration = action.payload.requiresRegistration;
+//         state.otpSent = false;
+//         state.confirmationResult = null;
+//         state.error = null;
+//       })
+//       .addCase(verifyOTP.rejected, (state, action) => {
+//         state.isLoading = false;
+//         state.error = action.payload;
+//       })
+
+//       // Google Login
+//       .addCase(googleLogin.pending, (state) => {
+//         state.isLoading = true;
+//         state.error = null;
+//       })
+//       .addCase(googleLogin.fulfilled, (state, action) => {
+//         state.isLoading = false;
+//         state.user = action.payload.user;
+//         state.accessToken = action.payload.accessToken;
+//         state.refreshToken = action.payload.refreshToken;
+//         state.isAuthenticated = true;
+//         state.requiresRegistration = action.payload.requiresRegistration;
+//         state.error = null;
+//       })
+//       .addCase(googleLogin.rejected, (state, action) => {
+//         state.isLoading = false;
+//         state.error = action.payload;
+//       })
+
+//       // Apple Login
+//       .addCase(appleLogin.pending, (state) => {
+//         state.isLoading = true;
+//         state.error = null;
+//       })
+//       .addCase(appleLogin.fulfilled, (state, action) => {
+//         state.isLoading = false;
+//         state.user = action.payload.user;
+//         state.accessToken = action.payload.accessToken;
+//         state.refreshToken = action.payload.refreshToken;
+//         state.isAuthenticated = true;
+//         state.requiresRegistration = action.payload.requiresRegistration;
+//         state.error = null;
+//       })
+//       .addCase(appleLogin.rejected, (state, action) => {
+//         state.isLoading = false;
+//         state.error = action.payload;
+//       })
+
+//       // Guest Login
+//       .addCase(guestLogin.pending, (state) => {
+//         state.isLoading = true;
+//         state.error = null;
+//       })
+//       .addCase(guestLogin.fulfilled, (state, action) => {
+//         state.isLoading = false;
+//         state.user = action.payload.user;
+//         state.accessToken = action.payload.accessToken;
+//         state.refreshToken = action.payload.refreshToken;
+//         state.isAuthenticated = true;
+//         state.error = null;
+//       })
+//       .addCase(guestLogin.rejected, (state, action) => {
+//         state.isLoading = false;
+//         state.error = action.payload;
+//       });
+//   },
+// });
+
+// export const { clearError, clearOTPSent, logout, setUser, resetAuth, loginAsGuest } =
+//   authSlice.actions;
+// export default authSlice.reducer;

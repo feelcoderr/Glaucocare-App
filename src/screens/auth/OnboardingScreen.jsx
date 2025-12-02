@@ -41,7 +41,7 @@ const OnboardingScreen = ({ navigation }) => {
 
   const handleSkip = async () => {
     await AsyncStorage.setItem('hasSeenOnboarding', 'true');
-    navigation.replace('LanguageSelection');
+    navigation.replace('Login');
   };
 
   const handleNext = () => {
@@ -57,7 +57,7 @@ const OnboardingScreen = ({ navigation }) => {
 
   const handleGetStarted = async () => {
     await AsyncStorage.setItem('hasSeenOnboarding', 'true');
-    navigation.replace('LanguageSelection');
+    navigation.replace('Login');
   };
 
   const handleScroll = (event) => {

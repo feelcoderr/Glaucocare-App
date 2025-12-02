@@ -84,6 +84,8 @@ const RegistrationScreen = ({ navigation }) => {
         fullname,
         email: formData.email.trim(),
         languagePreference: 'en',
+        dateOfBirth: formData.dateOfBirth,
+        gender: formData.gender,
       })
     );
   };

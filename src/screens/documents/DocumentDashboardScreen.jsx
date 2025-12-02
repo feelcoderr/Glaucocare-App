@@ -32,7 +32,15 @@ const DocumentDashboardScreen = ({ navigation }) => {
     documentType: '',
     file: null,
   });
-
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const categories = [
+    'Test Results',
+    'Prescriptions',
+    'Insurance Documents',
+    'X-ray/images',
+    'Medical Reports',
+    'Other',
+  ];
   useEffect(() => {
     if (isAuthenticated) {
       dispatch(fetchUserDocuments({ page: 1, limit: 100 }));
@@ -85,7 +93,7 @@ const DocumentDashboardScreen = ({ navigation }) => {
   ];
 
   const handleCategoryPress = (type) => {
-    navigation.navigate('DocumentList', { documentType: type });
+    navigation.navigate('DocumentListScreen', { documentType: type });
   };
 
   // ✅ FIXED: Updated for new ImagePicker API
@@ -256,18 +264,6 @@ const DocumentDashboardScreen = ({ navigation }) => {
         <Text style={styles.pageTitle}>Medical Documents</Text>
         <Text style={styles.pageSubtitle}>Securely store and access your health files anytime</Text>
 
-        {/* Search Bar */}
-        <View style={styles.searchContainer}>
-          <Ionicons name="search" size={20} color={colors.textSecondary} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search documents..."
-            placeholderTextColor={colors.textSecondary}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-        </View>
-
         {/* Document Categories Grid */}
         <View style={styles.categoriesGrid}>
           {documentCategories.map((category, index) => (
@@ -319,16 +315,17 @@ const DocumentDashboardScreen = ({ navigation }) => {
 
               {/* Category Selector */}
               <Text style={styles.label}>Category</Text>
-              <TouchableOpacity style={styles.dropdown}>
-                <Text style={[styles.dropdownText, !uploadForm.documentType && styles.placeholder]}>
-                  {uploadForm.documentType || 'Select category'}
-                </Text>
-                <Ionicons name="chevron-down" size={20} color={colors.textSecondary} />
-              </TouchableOpacity>
 
               {/* Quick Category Buttons */}
               <View style={styles.quickCategories}>
-                {['Test Results', 'Prescriptions', 'Medical Reports', 'Other'].map((cat) => (
+                {[
+                  'Test Results',
+                  'Prescriptions',
+                  'Insurance Documents',
+                  'X-ray/images',
+                  'Medical Reports',
+                  'Other',
+                ].map((cat) => (
                   <TouchableOpacity
                     key={cat}
                     style={[

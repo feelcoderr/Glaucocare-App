@@ -2,7 +2,7 @@
 // Add Medication Reminder Screen
 // ============================================================================
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -20,7 +20,7 @@ import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { createMedicationReminder } from '../../store/slices/medicationSlice';
 import { colors } from '../../styles/colors';
-
+import notificationService from '../../services/notifications/notificationService';
 const AddMedicationScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const { isLoading } = useSelector((state) => state.medication);
@@ -34,6 +34,20 @@ const AddMedicationScreen = ({ navigation }) => {
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [activeTimeIndex, setActiveTimeIndex] = useState(0);
+
+  useEffect(() => {
+    const requestPermissions = async () => {
+      const granted = await notificationService.requestPermissions();
+      if (!granted) {
+        Alert.alert(
+          'Notifications Disabled',
+          'Please enable notifications in settings to receive medication reminders.',
+          [{ text: 'OK' }]
+        );
+      }
+    };
+    requestPermissions();
+  }, []);
 
   const formatDate = (date) => {
     return date.toISOString().split('T')[0];
@@ -79,7 +93,72 @@ const AddMedicationScreen = ({ navigation }) => {
     }
   };
 
-  const handleSubmit = () => {
+  // const handleSubmit = () => {
+  //   if (!medicationName.trim()) {
+  //     Alert.alert('Error', 'Please enter medication name');
+  //     return;
+  //   }
+
+  //   const validTimes = reminderTimes.filter((time) => time.trim() !== '');
+  //   if (validTimes.length === 0) {
+  //     Alert.alert('Error', 'Please add at least one reminder time');
+  //     return;
+  //   }
+
+  //   const reminderData = {
+  //     customMedicationName: medicationName.trim(),
+  //     dosage: '1 dose',
+  //     frequency: 'custom',
+  //     reminderTimes: validTimes.map((time) => ({ time })),
+  //     startDate: formatDate(startDate),
+  //     endDate: formatDate(endDate),
+  //     notes: notes.trim(),
+  //     enableNotifications: true,
+  //   };
+
+  //   dispatch(createMedicationReminder(reminderData))
+  //     .unwrap()
+  //     .then(() => {
+  //       Alert.alert('Success', 'Medication reminder created successfully');
+  //       navigation.goBack();
+  //     })
+  //     .catch((error) => {
+  //       Alert.alert('Error', error.message || 'Failed to create reminder');
+  //     });
+
+  //     try {
+  //     // CREATE REMINDER IN BACKEND
+  //     const result = await dispatch(createMedicationReminder(reminderData)).unwrap();
+
+  //     // SCHEDULE LOCAL NOTIFICATIONS
+  //     const scheduledNotifications = await notificationService.scheduleMedicationReminders({
+  //       reminderId: result._id,
+  //       medicationName: medicationName.trim(),
+  //       dosage: '1 dose',
+  //       reminderTimes: validTimes.map((time) => ({ time })),
+  //       startDate: formatDate(startDate),
+  //       endDate: formatDate(endDate),
+  //     });
+
+  //     console.log(`✅ Scheduled ${scheduledNotifications.length} notifications`);
+
+  //     Alert.alert(
+  //       'Success',
+  //       `Medication reminder created successfully!\n${scheduledNotifications.length} notifications scheduled.`,
+  //       [
+  //         {
+  //           text: 'OK',
+  //           onPress: () => navigation.goBack(),
+  //         },
+  //       ]
+  //     );
+  //   } catch (error) {
+  //     console.error('Create reminder error:', error);
+  //     Alert.alert('Error', error.message || 'Failed to create reminder');
+  //   }
+
+  // };
+  const handleSubmit = async () => {
     if (!medicationName.trim()) {
       Alert.alert('Error', 'Please enter medication name');
       return;
@@ -102,17 +181,37 @@ const AddMedicationScreen = ({ navigation }) => {
       enableNotifications: true,
     };
 
-    dispatch(createMedicationReminder(reminderData))
-      .unwrap()
-      .then(() => {
-        Alert.alert('Success', 'Medication reminder created successfully');
-        navigation.goBack();
-      })
-      .catch((error) => {
-        Alert.alert('Error', error.message || 'Failed to create reminder');
-      });
-  };
+    try {
+      // CREATE REMINDER IN BACKEND
+      const result = await dispatch(createMedicationReminder(reminderData)).unwrap();
 
+      // SCHEDULE LOCAL NOTIFICATIONS
+      const scheduledNotifications = await notificationService.scheduleMedicationReminders({
+        reminderId: result._id,
+        medicationName: medicationName.trim(),
+        dosage: '1 dose',
+        reminderTimes: validTimes.map((time) => ({ time })),
+        startDate: formatDate(startDate),
+        endDate: formatDate(endDate),
+      });
+
+      console.log(`✅ Scheduled ${scheduledNotifications.length} notifications`);
+
+      Alert.alert(
+        'Success',
+        `Medication reminder created successfully!\n${scheduledNotifications.length} notifications scheduled.`,
+        [
+          {
+            text: 'OK',
+            onPress: () => navigation.goBack(),
+          },
+        ]
+      );
+    } catch (error) {
+      console.error('Create reminder error:', error);
+      Alert.alert('Error', error.message || 'Failed to create reminder');
+    }
+  };
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}

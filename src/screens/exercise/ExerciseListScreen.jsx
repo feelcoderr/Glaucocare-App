@@ -25,7 +25,7 @@ const EXERCISES_AND_GAMES = [
   {
     id: '2',
     title: 'Focus Tracker',
-    type: 'Exercise',
+    type: 'Game',
     level: 'Intermediate',
     icon: 'https://res.cloudinary.com/datgoelws/image/upload/v1762162971/eye-icon_maa0eg.png',
   },
@@ -39,7 +39,7 @@ const EXERCISES_AND_GAMES = [
   {
     id: '4',
     title: 'Color Spot Challenge',
-    type: 'Game',
+    type: 'Exercise',
     level: 'Beginner',
     icon: 'https://res.cloudinary.com/datgoelws/image/upload/v1762162971/eye-icon_maa0eg.png',
   },

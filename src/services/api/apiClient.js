@@ -10,14 +10,14 @@ const getBaseURL = () => {
     // Development mode
     if (Platform.OS === 'android') {
       // Android emulator
-      return 'http://192.168.14.147:8000/api/v1';
+      return 'http://192.168.242.147:8000/api/v1';
     } else {
       // iOS simulator or other
-      return 'http://192.168.14.147:8000/api/v1';
+      return 'http://192.168.242.147:8000/api/v1';
     }
   }
   // Production mode
-  return 'https://192.168.14.147/api/v1';
+  return 'http://192.168.242.147:8000/api/v1';
 };
 
 const API_BASE_URL = getBaseURL();

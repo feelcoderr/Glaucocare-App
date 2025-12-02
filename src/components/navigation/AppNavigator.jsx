@@ -23,9 +23,23 @@ import ExerciseListScreen from '../../screens/exercise/ExerciseListScreen';
 import EducationalContentListScreen from '../../screens/education/Educationalcontentlistscreen';
 import GlaucomaGuideScreen from '../../screens/education/GlaucomaGuideScreen';
 import DocumentDashboardScreen from '../../screens/documents/DocumentDashboardScreen';
+import DocumentListScreen from '../../screens/documents/DocumentListScreen';
 import BlogListScreen from '../../screens/blog/BlogLIstScreen';
 import DoctorListScreen from '../../screens/doctor/DoctorListScreen';
-
+// Settings Screens
+import EditProfileScreen from '../../screens/settings/EditProfileScreen';
+import LanguageSettingsScreen from '../../screens/settings/LanguageSettingsScreen';
+import NotificationPreferencesScreen from '../../screens/settings/NotificationPreferencesScreen';
+import ContactSupportScreen from '../../screens/settings/ContactSupportScreen';
+import HelpFAQScreen from '../../screens/settings/HelpFAQScreen';
+import TermsPrivacyScreen from '../../screens/settings/TermsPrivacyScreen';
+import AboutAppScreen from '../../screens/settings/AboutAppScreen';
+import EyeHealthAssessmentScreen from '../../screens/assessment/EyeHealthAssessmentScreen';
+import AssessmentResultScreen from '../../screens/assessment/AssessmentResultScreen';
+import AssessmentHistoryScreen from '../../screens/assessment/AssessmentHistoryScreen';
+import PeripheralPopScreen from '../../screens/exercise/PeripheralPopScreen';
+import LetterHuntScreen from '../../screens/exercise/LetterHuntScreen';
+import ClockSweepScreen from '../../screens/exercise/ClockSweepScreen';
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -56,10 +70,25 @@ const AppNavigator = () => {
           <Stack.Screen name="BlogDetail" component={BlogDetailScreen} />
           <Stack.Screen name="BlogList" component={BlogListScreen} />
           <Stack.Screen name="ExerciseList" component={ExerciseListScreen} />
+          <Stack.Screen name="PeripheralPopScreen" component={PeripheralPopScreen} />
+          <Stack.Screen name="LetterHuntScreen" component={LetterHuntScreen} />
+          <Stack.Screen name="ClockSweepScreen" component={ClockSweepScreen} />
 
           <Stack.Screen name="EducationalContentList" component={EducationalContentListScreen} />
           <Stack.Screen name="GlaucomaGuide" component={GlaucomaGuideScreen} />
           <Stack.Screen name="DocumentDashboardScreen" component={DocumentDashboardScreen} />
+          <Stack.Screen name="DocumentListScreen" component={DocumentListScreen} />
+
+          <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+          <Stack.Screen name="LanguageSettings" component={LanguageSettingsScreen} />
+          <Stack.Screen name="NotificationPreferences" component={NotificationPreferencesScreen} />
+          <Stack.Screen name="ContactSupport" component={ContactSupportScreen} />
+          <Stack.Screen name="HelpFAQ" component={HelpFAQScreen} />
+          <Stack.Screen name="TermsPrivacy" component={TermsPrivacyScreen} />
+          <Stack.Screen name="AboutApp" component={AboutAppScreen} />
+          <Stack.Screen name="EyeHealthAssessment" component={EyeHealthAssessmentScreen} />
+          <Stack.Screen name="AssessmentResult" component={AssessmentResultScreen} />
+          <Stack.Screen name="AssessmentHistory" component={AssessmentHistoryScreen} />
         </>
       ) : (
         <Stack.Screen name="Auth" component={AuthNavigator} />

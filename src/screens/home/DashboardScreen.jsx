@@ -35,7 +35,7 @@ const DashboardScreen = ({ navigation }) => {
   } = useSelector((state) => state.dashboard);
   console.log(recentDoctors);
   const [refreshing, setRefreshing] = useState(false);
-
+  console.log('user : ', user);
   useEffect(() => {
     dispatch(fetchDashboard());
   }, []);

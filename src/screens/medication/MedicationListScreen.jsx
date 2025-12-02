@@ -2,7 +2,7 @@
 // Medication Reminder List Screen
 // ============================================================================
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -20,28 +20,71 @@ import {
   deleteMedicationReminder,
   markMedicationAsTaken,
 } from '../../store/slices/medicationSlice';
+import notificationService from '../../services/notifications/notificationService';
 import { colors } from '../../styles/colors';
 import { LinearGradient } from 'expo-linear-gradient';
 const MedicationListScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const { reminders, isLoading } = useSelector((state) => state.medication);
   const { isAuthenticated } = useSelector((state) => state.auth);
-
+  const [refreshing, setRefreshing] = useState(false);
   useEffect(() => {
     if (isAuthenticated) {
       dispatch(fetchUserReminders(true));
     }
   }, [isAuthenticated]);
+  useEffect(() => {
+    loadReminders();
+  }, []);
 
-  const handleDelete = (id) => {
-    Alert.alert('Delete Reminder', 'Are you sure you want to delete this reminder?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: () => dispatch(deleteMedicationReminder(id)),
-      },
-    ]);
+  const loadReminders = async () => {
+    try {
+      await dispatch(fetchUserReminders(true)).unwrap();
+    } catch (error) {
+      console.error('Load reminders error:', error);
+    }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadReminders();
+    setRefreshing(false);
+  };
+
+  const handleDelete = (reminder) => {
+    Alert.alert(
+      'Delete Reminder',
+      `Are you sure you want to delete ${reminder.customMedicationName || reminder.medication?.name}?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              // CANCEL ALL NOTIFICATIONS FOR THIS REMINDER
+              await notificationService.cancelMedicationReminders(reminder._id);
+
+              // DELETE FROM BACKEND
+              await dispatch(deleteMedicationReminder(reminder._id)).unwrap();
+
+              Alert.alert('Success', 'Medication reminder deleted successfully');
+            } catch (error) {
+              Alert.alert('Error', 'Failed to delete reminder');
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleMarkAsTaken = async (reminder, time) => {
+    try {
+      await dispatch(markMedicationAsTaken({ id: reminder._id, time })).unwrap();
+      Alert.alert('Success', 'Medication marked as taken');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to mark as taken');
+    }
   };
 
   const formatDate = (dateString) => {

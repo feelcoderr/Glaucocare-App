@@ -11,8 +11,9 @@ import eventReducer from './slices/eventSlice';
 import dashboardReducer from './slices/dashboardSlice';
 import searchReducer from './slices/searchSlice';
 import notificationReducer from './slices/notificationSlice';
-import blogReducer from './slices/blogSlice'; // ADD THIS
+import blogReducer from './slices/blogSlice';
 import educationalContentReducer from './slices/educationalContentSlice';
+import assessmentReducer from './slices/assessmentSlice';
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -23,7 +24,8 @@ const store = configureStore({
     dashboard: dashboardReducer,
     search: searchReducer,
     notification: notificationReducer,
-    blog: blogReducer, // ADD THIS
+    blog: blogReducer,
+    assessment: assessmentReducer,
     educationalContent: educationalContentReducer,
   },
   middleware: (getDefaultMiddleware) =>

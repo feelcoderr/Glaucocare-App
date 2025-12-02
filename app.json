@@ -2,6 +2,7 @@
   "expo": {
     "name": "GlaucoCare",
     "slug": "glaucocare",
+    "scheme": "glaucocare",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/logo-bg-wt.png",
@@ -38,16 +39,6 @@
         "android.permission.USE_BIOMETRIC",
         "android.permission.RECORD_AUDIO",
         "android.permission.VIBRATE",
-        "android.permission.WAKE_LOCK",
-        "android.permission.CAMERA",
-        "android.permission.READ_EXTERNAL_STORAGE",
-        "android.permission.WRITE_EXTERNAL_STORAGE",
-        "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.USE_FINGERPRINT",
-        "android.permission.USE_BIOMETRIC",
-        "android.permission.RECORD_AUDIO",
-        "android.permission.VIBRATE",
         "android.permission.WAKE_LOCK"
       ],
       "package": "com.anonymous.glaucocare"
@@ -58,23 +49,30 @@
     },
     "plugins": [
       "expo-camera",
+      "expo-notifications",
       [
-    "expo-image-picker",
-    {
-      "photosPermission": "Allow GlaucoCare to access your photos",
-      "cameraPermission": "Allow GlaucoCare to access your camera"
-    }
-  ],
-  [
-    "expo-document-picker",
-    {
-      "iCloudContainerEnvironment": "Production"
-    }
-  ],
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow GlaucoCare to access your photos",
+          "cameraPermission": "Allow GlaucoCare to access your camera"
+        }
+      ],
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production"
+        }
+      ],
       "expo-document-picker",
       "expo-local-authentication",
       "expo-notifications",
-      "expo-font"
-    ]
+      "expo-font",
+      "expo-web-browser"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "c6735223-ee6a-4651-ba98-b234173c1c77"
+      }
+    }
   }
 }

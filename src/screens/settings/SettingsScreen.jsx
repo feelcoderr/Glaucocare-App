@@ -89,8 +89,8 @@ const SettingsScreen = ({ navigation }) => {
             style={styles.profileImage}
           />
           <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>{user?.fullname || 'Luna Wilson'}</Text>
-            <Text style={styles.profileEmail}>{user?.email || 'luna.wilson@email.com'}</Text>
+            <Text style={styles.profileName}>{user?.fullname || 'Guest'}</Text>
+            <Text style={styles.profileEmail}>{user?.email || ''}</Text>
           </View>
         </TouchableOpacity>
 
@@ -100,9 +100,9 @@ const SettingsScreen = ({ navigation }) => {
           {renderSettingItem('person-outline', 'Profile Information', () =>
             navigation.navigate('EditProfile')
           )}
-          {renderSettingItem('lock-closed-outline', 'Privacy Settings', () =>
+          {/* {renderSettingItem('lock-closed-outline', 'Privacy Settings', () =>
             navigation.navigate('PrivacySettings')
-          )}
+          )} */}
           {renderSettingItem('notifications-outline', 'Notification Preferences', () =>
             navigation.navigate('NotificationPreferences')
           )}
@@ -119,6 +119,9 @@ const SettingsScreen = ({ navigation }) => {
           )}
           {renderSettingItem('time-outline', 'Glaucoma Guide', () =>
             navigation.navigate('GlaucomaGuide', { slug: 'glaucoma-guide' })
+          )}
+          {renderSettingItem('clipboard-outline', 'Eye Health Assessment', () =>
+            navigation.navigate('EyeHealthAssessment')
           )}
           {renderSettingItem('document-text', 'My document', () =>
             navigation.navigate('DocumentDashboardScreen')
