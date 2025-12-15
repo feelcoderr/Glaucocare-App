@@ -32,6 +32,21 @@ export const submitAssessment = createAsyncThunk(
   }
 );
 
+export const fetchLatestResult = createAsyncThunk(
+  'assessment/fetchLatestResult',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await assessmentApi.getLatestAssessment();
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 404) {
+        return null; // No assessment found
+      }
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 const initialState = {
   currentQuestion: 1,
   answers: {},
@@ -39,6 +54,9 @@ const initialState = {
   isLoading: false,
   error: null,
   result: null,
+  latestResult: null,
+  hasCompletedAssessment: false,
+  isCheckingPrevious: false,
 };
 
 const assessmentSlice = createSlice({
@@ -65,6 +83,13 @@ const assessmentSlice = createSlice({
       if (state.currentQuestion > 1) {
         state.currentQuestion -= 1;
       }
+    },
+    startNewAssessment: (state) => {
+      state.currentQuestion = 1;
+      state.answers = {};
+      state.result = null;
+      state.error = null;
+      state.hasCompletedAssessment = false;
     },
   },
   extraReducers: (builder) => {
@@ -97,11 +122,32 @@ const assessmentSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload?.message || 'Failed to submit assessment';
       });
+    builder
+      .addCase(fetchLatestResult.pending, (state) => {
+        state.isCheckingPrevious = true;
+      })
+      .addCase(fetchLatestResult.fulfilled, (state, action) => {
+        state.isCheckingPrevious = false;
+        if (action.payload) {
+          state.latestResult = action.payload;
+          state.hasCompletedAssessment = true;
+        }
+      })
+      .addCase(fetchLatestResult.rejected, (state) => {
+        state.isCheckingPrevious = false;
+        state.hasCompletedAssessment = false;
+      });
   },
 });
 
-export const { setCurrentQuestion, setAnswer, clearAnswers, nextQuestion, previousQuestion } =
-  assessmentSlice.actions;
+export const {
+  setCurrentQuestion,
+  setAnswer,
+  clearAnswers,
+  nextQuestion,
+  previousQuestion,
+  startNewAssessment,
+} = assessmentSlice.actions;
 
 export default assessmentSlice.reducer;
 // // FILE: src/store/slices/assessmentSlice.js

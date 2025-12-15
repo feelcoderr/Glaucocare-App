@@ -39,7 +39,7 @@ export const assessmentApi = {
       const response = await apiClient.get('/assessments/latest');
       return response;
     } catch (error) {
-      console.error('❌ Get Latest Assessment Error:', error);
+      console.error('❌ getLatestAssessment error:', error);
       throw error;
     }
   },
@@ -59,6 +59,7 @@ export const assessmentApi = {
   getUserAssessments: async (page = 1, limit = 10) => {
     try {
       const response = await apiClient.get(`/assessments?page=${page}&limit=${limit}`);
+      console.log('✅ Fetched Assessments:', response.data);
       return response;
     } catch (error) {
       console.error('❌ Get Assessments Error:', error);

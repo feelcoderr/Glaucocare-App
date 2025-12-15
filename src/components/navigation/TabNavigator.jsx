@@ -26,7 +26,7 @@ const TabNavigator = () => {
           if (route.name === 'HomeTab') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'DoctorTab') {
-            iconName = focused ? 'medical' : 'medical-outline';
+            iconName = focused ? 'medkit' : 'medkit-outline';
           } else if (route.name === 'GuideTab') {
             iconName = focused ? 'eye' : 'eye-outline';
           } else if (route.name === 'BlogTab') {

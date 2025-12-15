@@ -55,15 +55,6 @@ const GuestTabNavigator = () => {
         },
         tabBarActiveTintColor: colors.primaryDark,
         tabBarInactiveTintColor: colors.textSecondary,
-        // tabBarStyle: {
-        //   height: 60,
-        //   paddingBottom: 8,
-        //   paddingTop: 16,
-        // },
-        // tabBarLabelStyle: {
-        //   fontSize: 12,
-        //   fontFamily: 'Poppins_500Medium',
-        // },
       })}>
       <Tab.Screen name="Home" component={DashboardScreen} />
       <Tab.Screen name="Doctor" component={DoctorListScreen} />

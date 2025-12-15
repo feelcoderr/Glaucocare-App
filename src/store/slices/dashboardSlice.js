@@ -20,7 +20,7 @@ export const fetchDashboard = createAsyncThunk(
 
 const initialState = {
   user: null,
-  nextMedicationReminder: null,
+  nextMedicationReminder: [],
   statistics: {
     activeMedications: 0,
     totalDocuments: 0,
@@ -55,7 +55,7 @@ const dashboardSlice = createSlice({
       .addCase(fetchDashboard.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload.user;
-        state.nextMedicationReminder = action.payload.nextMedicationReminder;
+        state.nextMedicationReminders = action.payload.nextMedicationReminders || [];
         state.statistics = action.payload.statistics;
         state.recentDoctors = action.payload.recentDoctors;
         state.upcomingEvents = action.payload.upcomingEvents;

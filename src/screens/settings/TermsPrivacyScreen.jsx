@@ -54,8 +54,7 @@ const TermsPrivacyScreen = ({ navigation }) => {
 
         <Text style={styles.subSectionTitle}>3. Content Ownership</Text>
         <Text style={styles.bodyText}>
-          Any stories or content you upload remain yours, but we may feature them (with your
-          permission) in the community section.
+          Any documents you upload remain yours, And only you can access it the documents section.
         </Text>
 
         <Text style={styles.subSectionTitle}>4. Updates & Changes</Text>
@@ -68,8 +67,8 @@ const TermsPrivacyScreen = ({ navigation }) => {
 
         <Text style={styles.subSectionTitle}>1. Data Collection</Text>
         <Text style={styles.bodyText}>
-          We collect personal information (name, email, phone), health data (medications,
-          appointments), and usage data to improve your experience.
+          We collect personal information (name, email, phone, gender), health data (medications),
+          and usage data to improve your experience.
         </Text>
 
         <Text style={styles.subSectionTitle}>2. Data Usage</Text>
@@ -106,13 +105,12 @@ const TermsPrivacyScreen = ({ navigation }) => {
 
         <Text style={styles.subSectionTitle}>5. Cookies & Tracking</Text>
         <Text style={styles.bodyText}>
-          We use minimal tracking for analytics to improve app performance. You can disable this in
-          Settings.
+          We use minimal tracking for analytics to improve app performance with your permission.
         </Text>
 
         <Text style={styles.subSectionTitle}>6. Contact Us</Text>
         <Text style={styles.bodyText}>
-          For privacy concerns or data requests, email us at privacy@glaucocare.com
+          For privacy concerns or data requests, email us at admin@glaucocare.in
         </Text>
 
         <View style={{ height: 40 }} />

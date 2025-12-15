@@ -83,11 +83,6 @@ const OnboardingScreen = ({ navigation }) => {
         {onboardingData.map((item) => (
           <View key={item.id} style={styles.slide}>
             <View style={styles.imageContainer}>
-              {/* <Image
-                // source={require('../../assets' + item.id + '.png')}
-                source={require('../../assets/images/onboarding' + item.id + '.png')}
-                style={styles.imagePlaceholder}
-              /> */}
               <Image source={onboardingImages[item.id]} />
             </View>
 

@@ -62,28 +62,28 @@ const NotificationScreen = ({ navigation }) => {
     if (!notification.isRead) {
       dispatch(markNotificationAsRead(notification._id));
     } // Navigate based on notification type
-    switch (notification.type) {
-      case 'medication_reminder':
-        navigation.navigate('MedicationList');
-        break;
-      case 'event_announcement':
-        if (notification.data?.eventId) {
-          navigation.navigate('EventDetail', { eventId: notification.data.eventId });
-        }
-        break;
-      case 'blog_post':
-        if (notification.data?.blogId) {
-          navigation.navigate('BlogDetail', { blogId: notification.data.blogId });
-        }
-        break;
-      case 'educational_content':
-        if (notification.data?.contentId) {
-          navigation.navigate('EducationalDetail', { contentId: notification.data.contentId });
-        }
-        break;
-      default:
-        break;
-    }
+    // switch (notification.type) {
+    //   case 'medication_reminder':
+    //     navigation.navigate('MedicationList');
+    //     break;
+    //   case 'event_announcement':
+    //     if (notification.data?.eventId) {
+    //       navigation.navigate('EventDetail', { eventId: notification.data.eventId });
+    //     }
+    //     break;
+    //   case 'blog_post':
+    //     if (notification.data?.blogId) {
+    //       navigation.navigate('BlogDetail', { blogId: notification.data.blogId });
+    //     }
+    //     break;
+    //   case 'educational_content':
+    //     if (notification.data?.contentId) {
+    //       navigation.navigate('EducationalDetail', { contentId: notification.data.contentId });
+    //     }
+    //     break;
+    //   default:
+    //     break;
+    // }
   };
 
   const handleMarkAllAsRead = () => {

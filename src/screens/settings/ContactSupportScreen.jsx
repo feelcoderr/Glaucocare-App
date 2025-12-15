@@ -10,8 +10,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../../styles/colors';
 
 const ContactSupportScreen = ({ navigation }) => {
-  const supportEmail = 'support@glaucocare.com';
-  const supportPhone = '+91 9876543210';
+  const supportEmail = 'admin@glaucocare.in';
+  const supportPhone = '+91 9909008668';
 
   const handleSendEmail = () => {
     const subject = 'Support Request - GlaucoCare App';

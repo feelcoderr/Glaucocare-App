@@ -24,46 +24,36 @@ const HelpFAQScreen = ({ navigation }) => {
         {
           question: 'Can I change my email or phone number after signing up?',
           answer:
-            'Yes, you can change both. Go to Profile Information and edit your contact details. Some changes may require re-verification.',
-        },
-        {
-          question: 'How do I reset my password?',
-          answer:
-            'Go to the login screen, tap "Forgot Password", and follow the instructions to reset your password via email or OTP.',
+            'No, you can not change email or phone number from App. For email or mobile number change you can contact us on Support because some changes may require re-verification.',
         },
         {
           question: 'Is my medical data private and secure?',
           answer:
-            'Absolutely. Your data is encrypted and stored securely. We comply with data privacy standards to protect your health records.',
+            'Absolutely. Your data is encrypted and stored securely. We comply with data privacy standards to protect your data.',
         },
       ],
     },
     {
-      category: 'Medical Records & Documents',
+      category: 'Documents',
       questions: [
         {
-          question: 'How do I upload my medical reports?',
+          question: 'How do I upload my documents?',
           answer:
-            'Go to Documents section, tap the + button, and select files from your device or take a photo of your reports.',
+            'Go to Documents section, tap the + button, and select files from your device or take a photo of your document.',
         },
         {
           question: 'What file formats are supported?',
-          answer:
-            'We support PDF, JPG, PNG, and HEIC formats. Maximum file size is 10MB per document.',
+          answer: 'We support JPG, PNG, and JPEG formats. Maximum file size is 10MB per document.',
         },
       ],
     },
     {
-      category: 'Appointments & Reminders',
+      category: 'Reminders',
       questions: [
         {
           question: 'How do I set medication reminders?',
           answer:
             'Go to Medications section, add your medication, and set reminder times. You will receive notifications at the scheduled times.',
-        },
-        {
-          question: 'Can I snooze or dismiss reminders?',
-          answer: 'Yes, when a reminder appears, you can snooze it for later or mark it as taken.',
         },
       ],
     },
@@ -83,31 +73,12 @@ const HelpFAQScreen = ({ navigation }) => {
       ],
     },
     {
-      category: 'Stories & Community',
-      questions: [
-        {
-          question: 'How do I share my story?',
-          answer:
-            'Go to Community section, tap Create Story, and share your experience. Your story helps inspire others.',
-        },
-        {
-          question: 'Can I remain anonymous?',
-          answer: 'Yes, you can choose to post anonymously when sharing your story.',
-        },
-      ],
-    },
-    {
       category: 'Support & General',
       questions: [
         {
           question: 'How do I contact support?',
           answer:
             'Go to Settings > Support > Contact Support. You can email us or call our support team Monday-Saturday, 9AM-6PM.',
-        },
-        {
-          question: 'Is the app available in multiple languages?',
-          answer:
-            'Yes, we support English, Hindi, Marathi, and Gujarati. You can change the language in Settings > Language & Region.',
         },
       ],
     },

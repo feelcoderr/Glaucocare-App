@@ -26,7 +26,11 @@ import { setUser } from '../../store/slices/authSlice'; // adapt to your auth sl
 
 const EditProfileScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
+  const { user: dashboardUser } = useSelector((state) => state.dashboard);
+  const { user: authUser } = useSelector((state) => state.auth);
+
+  // Prefer dashboard user (has presigned URL) but fallback to auth user
+  const user = dashboardUser || authUser;
 
   const [firstName, setFirstName] = useState(user?.fullname?.split(' ')[0] || '');
   const [lastName, setLastName] = useState(user?.fullname?.split(' ').slice(1).join(' ') || '');
@@ -138,9 +142,7 @@ const EditProfileScreen = ({ navigation }) => {
         ...(gender ? { gender } : {}),
       };
       console.log('Updating profile with payload:', payload);
-      // dispatch redux thunk to update profile (returns resolved promise)
       const res = await dispatch(updateProfile(payload)).unwrap();
-      // res is the payload returned by thunk (apiClient response.data)
       const updatedUser = res?.data ?? res;
 
       // 2) If profileImage is a local URI (user changed it), upload separately
@@ -294,7 +296,7 @@ const EditProfileScreen = ({ navigation }) => {
             <TextInput
               style={styles.input}
               value={email}
-              onChangeText={setEmail}
+              editable={false}
               placeholder="Enter email"
               placeholderTextColor={colors.textSecondary}
               keyboardType="email-address"
@@ -313,7 +315,7 @@ const EditProfileScreen = ({ navigation }) => {
 
           {showDatePicker && (
             <DateTimePicker
-              value={dateOfBirth}
+              value={dateOfBirth ?? new Date()}
               mode="date"
               display={Platform.OS === 'ios' ? 'spinner' : 'default'}
               onChange={handleDateChange}

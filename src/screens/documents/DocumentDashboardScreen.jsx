@@ -37,7 +37,7 @@ const DocumentDashboardScreen = ({ navigation }) => {
     'Test Results',
     'Prescriptions',
     'Insurance Documents',
-    'X-ray/images',
+    'X Rays Images',
     'Medical Reports',
     'Other',
   ];
@@ -77,11 +77,11 @@ const DocumentDashboardScreen = ({ navigation }) => {
       count: documentsByType['Insurance Documents'],
     },
     {
-      type: 'X-rays/Images',
+      type: 'X Rays Images',
       icon: '🩻',
       color: '#E8F5E9',
       iconColor: '#4CAF50',
-      count: documentsByType['X-rays/Images'],
+      count: documentsByType['X Rays Images'],
     },
     {
       type: 'Other',
@@ -107,7 +107,7 @@ const DocumentDashboardScreen = ({ navigation }) => {
       }
 
       const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: ['images'], // ✅ CORRECT - array of strings
         quality: 0.8,
         allowsEditing: true,
       });
@@ -247,7 +247,7 @@ const DocumentDashboardScreen = ({ navigation }) => {
       </SafeAreaView>
     );
   }
-
+  console.log('📄 Rendering DocumentDashboardScreen with documentsByType:', documentsByType);
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
@@ -322,7 +322,7 @@ const DocumentDashboardScreen = ({ navigation }) => {
                   'Test Results',
                   'Prescriptions',
                   'Insurance Documents',
-                  'X-ray/images',
+                  'X Rays Images',
                   'Medical Reports',
                   'Other',
                 ].map((cat) => (

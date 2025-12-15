@@ -14,10 +14,10 @@ const AboutAppScreen = ({ navigation }) => {
     name: 'GlaucoCare',
     version: Application.nativeApplicationVersion || '1.0.0',
     buildNumber: Application.nativeBuildVersion || '100',
-    developer: 'GlaucoCare Team',
+    developer: 'Yug Desai',
     website: 'https://glaucocare.in',
-    email: 'support@glaucocare.in',
-    phone: '+91 9876543210',
+    email: 'admin@glaucocare.in',
+    phone: '+91 9909008668',
   };
 
   const handleOpenWebsite = () => {
@@ -33,6 +33,18 @@ const AboutAppScreen = ({ navigation }) => {
   const handleCall = () => {
     Linking.openURL(`tel:${appInfo.phone}`).catch((err) =>
       console.error('Failed to make call:', err)
+    );
+  };
+
+  const handleOpenTerms = () => {
+    Linking.openURL('https://www.glaucocare.in/termsandconditions').catch((err) =>
+      console.error('Failed to open Terms & Conditions:', err)
+    );
+  };
+
+  const handleOpenPrivacy = () => {
+    Linking.openURL('https://www.glaucocare.in/privacypolicy').catch((err) =>
+      console.error('Failed to open Privacy Policy:', err)
     );
   };
 
@@ -96,7 +108,7 @@ const AboutAppScreen = ({ navigation }) => {
             </View>
             <View style={styles.featureItem}>
               <Ionicons name="checkmark-circle" size={20} color={colors.primaryDark} />
-              <Text style={styles.featureText}>Doctor appointments management</Text>
+              <Text style={styles.featureText}>Doctors details</Text>
             </View>
             <View style={styles.featureItem}>
               <Ionicons name="checkmark-circle" size={20} color={colors.primaryDark} />
@@ -105,10 +117,6 @@ const AboutAppScreen = ({ navigation }) => {
             <View style={styles.featureItem}>
               <Ionicons name="checkmark-circle" size={20} color={colors.primaryDark} />
               <Text style={styles.featureText}>Eye exercises & games</Text>
-            </View>
-            <View style={styles.featureItem}>
-              <Ionicons name="checkmark-circle" size={20} color={colors.primaryDark} />
-              <Text style={styles.featureText}>Community stories & support</Text>
             </View>
             <View style={styles.featureItem}>
               <Ionicons name="checkmark-circle" size={20} color={colors.primaryDark} />
@@ -150,6 +158,27 @@ const AboutAppScreen = ({ navigation }) => {
             <View style={styles.contactTextContainer}>
               <Text style={styles.contactLabel}>Phone</Text>
               <Text style={styles.contactValue}>{appInfo.phone}</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.contactItem} onPress={handleOpenTerms}>
+            <View style={styles.contactIconContainer}>
+              <Ionicons name="document-text-outline" size={20} color={colors.primaryDark} />
+            </View>
+            <View style={styles.contactTextContainer}>
+              <Text style={styles.contactLabel}>Terms & Conditions</Text>
+              <Text style={styles.contactValue}>View Details</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.contactItem} onPress={handleOpenPrivacy}>
+            <View style={styles.contactIconContainer}>
+              <Ionicons name="shield-checkmark-outline" size={20} color={colors.primaryDark} />
+            </View>
+            <View style={styles.contactTextContainer}>
+              <Text style={styles.contactLabel}>Privacy Policy</Text>
+              <Text style={styles.contactValue}>View Details</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
           </TouchableOpacity>

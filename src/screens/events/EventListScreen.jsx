@@ -49,14 +49,44 @@ const EventListScreen = ({ navigation }) => {
     return timeString;
   };
 
+  const handleFilterPress = (filter) => {
+    setActiveFilter(filter);
+
+    let filterParams = {};
+
+    switch (filter) {
+      case 'All':
+        filterParams = { upcoming: undefined };
+        break;
+      case 'Free':
+        filterParams = { upcoming: true, isFree: true };
+        break;
+      case 'Upcoming':
+        filterParams = { upcoming: true };
+        break;
+      case 'Past':
+        filterParams = { upcoming: false };
+        break;
+      default:
+        filterParams = {};
+    }
+
+    dispatch(setFilters(filterParams));
+    dispatch(fetchEvents({ ...filters, ...filterParams }));
+  };
   const renderEventCard = ({ item }) => (
     <TouchableOpacity
       style={styles.eventCard}
-      onPress={() => navigation.navigate('EventDetail', { eventId: item._id })}>
+      // onPress={() => navigation.navigate('EventDetail', { eventId: item._id })}
+    >
       {/* Event Image */}
       <View style={styles.imageContainer}>
         <Image
-          source={{ uri: item.featuredImage || 'https://via.placeholder.com/350x200' }}
+          source={{
+            uri:
+              item.featuredImage ||
+              'https://res.cloudinary.com/datgoelws/image/upload/v1762598690/event_-2_w3hnz8.png',
+          }}
           style={styles.eventImage}
         />
         {item.isFree && (
@@ -118,7 +148,7 @@ const EventListScreen = ({ navigation }) => {
       </View>
 
       {/* Search Bar */}
-      <View style={styles.searchContainer}>
+      {/* <View style={styles.searchContainer}>
         <Ionicons name="search" size={20} color={colors.textSecondary} />
         <TextInput
           style={styles.searchInput}
@@ -128,7 +158,7 @@ const EventListScreen = ({ navigation }) => {
           onChangeText={setSearchQuery}
           onSubmitEditing={handleSearch}
         />
-      </View>
+      </View> */}
 
       {/* Filter Chips */}
       <View style={styles.filterContainer}>
@@ -136,7 +166,7 @@ const EventListScreen = ({ navigation }) => {
           <TouchableOpacity
             key={filter}
             style={[styles.filterChip, activeFilter === filter && styles.filterChipActive]}
-            onPress={() => setActiveFilter(filter)}>
+            onPress={() => handleFilterPress(filter)}>
             <Text style={[styles.filterText, activeFilter === filter && styles.filterTextActive]}>
               {filter}
             </Text>

@@ -12,6 +12,8 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,64 +25,191 @@ import {
   submitAssessment,
   clearAnswers,
   loadQuestions,
+  fetchLatestResult,
+  startNewAssessment,
 } from '../../store/slices/assessmentSlice';
 import { colors } from '../../styles/colors';
 
 const EyeHealthAssessmentScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { currentQuestion, answers, isLoading, questions } = useSelector(
-    (state) => state.assessment
-  );
+  const {
+    currentQuestion,
+    answers,
+    isLoading,
+    questions,
+    latestResult,
+    hasCompletedAssessment,
+    isCheckingPrevious,
+  } = useSelector((state) => state.assessment);
 
   const [detailText, setDetailText] = useState('');
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [isLoadingQuestions, setIsLoadingQuestions] = useState(true);
+  const [showPreviousResults, setShowPreviousResults] = useState(false);
 
-  // Load questions on mount
   useEffect(() => {
-    const fetchQuestions = async () => {
+    const initializeAssessment = async () => {
       try {
         setIsLoadingQuestions(true);
-        await dispatch(loadQuestions()).unwrap();
+
+        // First, check if user has previous assessment
+        const resultAction = await dispatch(fetchLatestResult()).unwrap();
+
+        if (resultAction) {
+          // User has completed assessment before
+          console.log('✅ Previous assessment found:', resultAction);
+          setShowPreviousResults(true);
+        } else {
+          // No previous assessment, load questions
+          console.log('ℹ️ No previous assessment found');
+          await dispatch(loadQuestions()).unwrap();
+          setShowPreviousResults(false);
+        }
       } catch (error) {
-        Alert.alert('Error', 'Failed to load questions. Please try again.');
-        navigation.goBack();
+        console.error('❌ Initialize error:', error);
+        // If error fetching previous results, load questions anyway
+        try {
+          await dispatch(loadQuestions()).unwrap();
+          setShowPreviousResults(false);
+        } catch (questionsError) {
+          Alert.alert('Error', 'Failed to load assessment. Please try again.');
+          navigation.goBack();
+        }
       } finally {
         setIsLoadingQuestions(false);
-        console.log(questions);
       }
     };
 
-    fetchQuestions();
+    initializeAssessment();
   }, []);
 
-  // Load saved answer when question changes
-  useEffect(() => {
-    if (questions.length > 0) {
-      const savedAnswer = answers[currentQuestion];
+  const handleRetakeAssessment = async () => {
+    Alert.alert(
+      'Retake Assessment',
+      'Starting a new assessment will replace your previous results. Continue?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Start New',
+          onPress: async () => {
+            try {
+              setIsLoadingQuestions(true);
+              dispatch(startNewAssessment());
+              await dispatch(loadQuestions()).unwrap();
+              setShowPreviousResults(false);
+            } catch (error) {
+              Alert.alert('Error', 'Failed to load questions. Please try again.');
+            } finally {
+              setIsLoadingQuestions(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+  // ✅ Handle view previous results
+  const handleViewResults = () => {
+    navigation.navigate('AssessmentResult');
+  };
 
-      if (savedAnswer) {
-        if (Array.isArray(savedAnswer)) {
-          setSelectedOptions(savedAnswer);
-          setDetailText('');
-        } else if (typeof savedAnswer === 'object' && savedAnswer.choice) {
-          setSelectedOptions([savedAnswer.choice]);
-          setDetailText(savedAnswer.detail || '');
-        } else if (typeof savedAnswer === 'string') {
-          if (question?.type === 'text') {
-            setDetailText(savedAnswer);
-            setSelectedOptions([]);
-          } else {
-            setSelectedOptions([savedAnswer]);
-            setDetailText('');
-          }
-        }
-      } else {
-        setSelectedOptions([]);
-        setDetailText('');
-      }
-    }
-  }, [currentQuestion, questions]);
+  // Show loading while fetching
+  if (isLoadingQuestions || isCheckingPrevious) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.primaryDark} />
+        <Text style={styles.loadingText}>Loading assessment...</Text>
+      </View>
+    );
+  }
+
+  // ✅ Show previous results screen
+  if (showPreviousResults && latestResult) {
+    return (
+      <SafeAreaView style={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.replace('Settings')}>
+            <Ionicons name="chevron-back" size={24} color={colors.textPrimary} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Eye Health Assessment</Text>
+          <View style={{ width: 24 }} />
+        </View>
+
+        <ScrollView contentContainerStyle={styles.resultsContainer}>
+          {/* Success Icon */}
+          <View style={styles.successIcon}>
+            <Ionicons name="checkmark-circle" size={80} color="#10B981" />
+          </View>
+
+          <View style={styles.disclaimerCard}>
+            <View style={styles.disclaimerHeader}>
+              <Ionicons name="information-circle-outline" size={20} color="#F59E0B" />
+              <Text style={styles.disclaimerTitle}>Medical Disclaimer</Text>
+            </View>
+            <Text style={styles.disclaimerText}>
+              This app does NOT diagnose, treat, cure, or prevent any medical condition. Always
+              consult qualified healthcare professionals for medical advice.
+            </Text>
+          </View>
+          <Text style={styles.resultsTitle}>Assessment Completed</Text>
+          <Text style={styles.resultsSubtitle}>
+            You completed your eye health assessment on{' '}
+            {new Date(latestResult.createdAt).toLocaleDateString('en-US', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric',
+            })}
+          </Text>
+
+          {/* Risk Level Badge */}
+          <View style={[styles.riskBadge, getRiskStyle(latestResult.riskLevel)]}>
+            <Text style={styles.riskLabel}>Risk Level</Text>
+            <Text style={styles.riskValue}>{latestResult.riskLevel || 'Unknown'}</Text>
+          </View>
+
+          {/* Score */}
+          {latestResult.score !== undefined && (
+            <View style={styles.scoreCard}>
+              <Text style={styles.scoreLabel}>Risk Score</Text>
+              <Text style={styles.scoreValue}>{latestResult.score}/18</Text>
+            </View>
+          )}
+
+          {/* Actions */}
+          <View style={styles.resultsActions}>
+            <TouchableOpacity style={styles.retakeButton} onPress={handleRetakeAssessment}>
+              <Ionicons name="refresh-outline" size={20} color={colors.primaryDark} />
+              <Text style={styles.retakeButtonText}>Retake Assessment</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Assessment History */}
+          {/* <TouchableOpacity
+            style={styles.historyButton}
+            onPress={() => navigation.navigate('AssessmentHistory')}>
+            <Ionicons name="time-outline" size={20} color={colors.primaryDark} />
+            <Text style={styles.historyButtonText}>View Assessment History</Text>
+            <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
+          </TouchableOpacity> */}
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  // If no questions available
+  if (!questions || questions.length === 0) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.errorContainer}>
+          <Ionicons name="alert-circle-outline" size={64} color={colors.textSecondary} />
+          <Text style={styles.errorText}>No questions available</Text>
+          <TouchableOpacity style={styles.errorButton} onPress={() => navigation.goBack()}>
+            <Text style={styles.errorButtonText}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   // Show loading while fetching questions
   if (isLoadingQuestions) {
@@ -255,60 +384,62 @@ const EyeHealthAssessmentScreen = ({ navigation }) => {
       <View style={styles.progressBarBackground}>
         <View style={[styles.progressBarFill, { width: `${progress}%` }]} />
       </View>
-
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}>
-        {/* Question */}
-        <View style={styles.questionHeader}>
-          <Text style={styles.questionNumber}>{currentQuestion}.</Text>
-          <Text style={styles.questionText}>{question.question}</Text>
-          {!question.required && (
-            <TouchableOpacity onPress={handleSkip}>
-              <Text style={styles.skipLink}>Skip</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-
-        {/* Options */}
-        {question.options && question.options.length > 0 && (
-          <View style={styles.optionsContainer}>
-            {question.options.map((option) => {
-              const isSelected = selectedOptions.includes(option.value);
-              return (
-                <TouchableOpacity
-                  key={option.value}
-                  style={[styles.optionButton, isSelected && styles.optionButtonSelected]}
-                  onPress={() => handleOptionSelect(option.value)}
-                  activeOpacity={0.7}>
-                  <View style={[styles.checkbox, isSelected && styles.checkboxSelected]}>
-                    {isSelected && <Ionicons name="checkmark" size={16} color={colors.white} />}
-                  </View>
-                  <Text style={[styles.optionText, isSelected && styles.optionTextSelected]}>
-                    {option.label}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardView}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}>
+          {/* Question */}
+          <View style={styles.questionHeader}>
+            <Text style={styles.questionNumber}>{currentQuestion}.</Text>
+            <Text style={styles.questionText}>{question.question}</Text>
+            {!question.required && (
+              <TouchableOpacity onPress={handleSkip}>
+                <Text style={styles.skipLink}>Skip</Text>
+              </TouchableOpacity>
+            )}
           </View>
-        )}
 
-        {/* Detail Input */}
-        {shouldShowDetailInput() && (
-          <TextInput
-            style={styles.detailInput}
-            placeholder={question.detailPlaceholder || 'Please specify'}
-            placeholderTextColor="#9CA3AF"
-            value={detailText}
-            onChangeText={setDetailText}
-            multiline
-            numberOfLines={4}
-            textAlignVertical="top"
-          />
-        )}
-      </ScrollView>
+          {/* Options */}
+          {question.options && question.options.length > 0 && (
+            <View style={styles.optionsContainer}>
+              {question.options.map((option) => {
+                const isSelected = selectedOptions.includes(option.value);
+                return (
+                  <TouchableOpacity
+                    key={option.value}
+                    style={[styles.optionButton, isSelected && styles.optionButtonSelected]}
+                    onPress={() => handleOptionSelect(option.value)}
+                    activeOpacity={0.7}>
+                    <View style={[styles.checkbox, isSelected && styles.checkboxSelected]}>
+                      {isSelected && <Ionicons name="checkmark" size={16} color={colors.white} />}
+                    </View>
+                    <Text style={[styles.optionText, isSelected && styles.optionTextSelected]}>
+                      {option.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          )}
 
+          {/* Detail Input */}
+          {shouldShowDetailInput() && (
+            <TextInput
+              style={styles.detailInput}
+              placeholder={question.detailPlaceholder || 'Please specify'}
+              placeholderTextColor="#9CA3AF"
+              value={detailText}
+              onChangeText={setDetailText}
+              multiline
+              numberOfLines={4}
+              textAlignVertical="top"
+            />
+          )}
+        </ScrollView>
+      </KeyboardAvoidingView>
       {/* Bottom Buttons */}
       <View style={styles.bottomContainer}>
         <View style={styles.buttonRow}>
@@ -354,7 +485,19 @@ const EyeHealthAssessmentScreen = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
+// ✅ Helper function for risk level styling
+const getRiskStyle = (riskLevel) => {
+  switch (riskLevel?.toLowerCase()) {
+    case 'low':
+      return { backgroundColor: '#D1FAE5', borderColor: '#10B981' };
+    case 'moderate':
+      return { backgroundColor: '#FEF3C7', borderColor: '#F59E0B' };
+    case 'high':
+      return { backgroundColor: '#FEE2E2', borderColor: '#EF4444' };
+    default:
+      return { backgroundColor: '#F3F4F6', borderColor: '#9CA3AF' };
+  }
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -411,7 +554,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_600SemiBold',
     flex: 1,
     textAlign: 'center',
-    marginLeft: -40,
   },
   saveText: {
     fontSize: 16,
@@ -448,6 +590,9 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   scrollView: {
+    flex: 1,
+  },
+  keyboardView: {
     flex: 1,
   },
   scrollContent: {
@@ -586,6 +731,122 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontFamily: 'Poppins_600SemiBold',
   },
+  resultsContainer: {
+    padding: 24,
+    alignItems: 'center',
+  },
+  successIcon: {
+    marginVertical: 32,
+  },
+  resultsTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    fontFamily: 'Poppins_700Bold',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  resultsSubtitle: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    fontFamily: 'Poppins_400Regular',
+    textAlign: 'center',
+    marginBottom: 32,
+  },
+  riskBadge: {
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 16,
+    borderWidth: 2,
+    marginBottom: 24,
+    alignItems: 'center',
+  },
+  riskLabel: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    fontFamily: 'Poppins_400Regular',
+    marginBottom: 4,
+  },
+  riskValue: {
+    fontSize: 24,
+    fontWeight: '700',
+    fontFamily: 'Poppins_700Bold',
+    textTransform: 'capitalize',
+  },
+  scoreCard: {
+    backgroundColor: colors.white,
+    padding: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: 32,
+  },
+  scoreLabel: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    fontFamily: 'Poppins_400Regular',
+    marginBottom: 8,
+  },
+  scoreValue: {
+    fontSize: 48,
+    fontWeight: '700',
+    color: colors.primaryDark,
+    fontFamily: 'Poppins_700Bold',
+  },
+  resultsActions: {
+    width: '100%',
+    gap: 12,
+  },
+  viewResultsButton: {
+    backgroundColor: colors.primaryDark,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 12,
+    gap: 8,
+  },
+  viewResultsButtonText: {
+    color: colors.white,
+    fontSize: 16,
+    fontWeight: '600',
+    fontFamily: 'Poppins_600SemiBold',
+  },
+  retakeButton: {
+    backgroundColor: colors.white,
+    borderWidth: 2,
+    borderColor: colors.primaryDark,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 12,
+    gap: 8,
+  },
+  retakeButtonText: {
+    color: colors.primaryDark,
+    fontSize: 16,
+    fontWeight: '600',
+    fontFamily: 'Poppins_600SemiBold',
+  },
+  historyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    backgroundColor: colors.white,
+    borderRadius: 12,
+    marginTop: 24,
+    width: '100%',
+  },
+  historyButtonText: {
+    flex: 1,
+    fontSize: 14,
+    color: colors.textPrimary,
+    fontFamily: 'Poppins_500Medium',
+    marginLeft: 12,
+  },
   completeLaterButton: {
     paddingVertical: 14,
     alignItems: 'center',
@@ -594,6 +855,33 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.primaryDark,
     fontFamily: 'Poppins_600SemiBold',
+  },
+  disclaimerCard: {
+    backgroundColor: '#FEF3C7',
+    borderWidth: 1,
+    borderColor: '#FCD34D',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    width: '100%',
+  },
+  disclaimerHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    gap: 8,
+  },
+  disclaimerTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#92400E',
+    fontFamily: 'Poppins_600SemiBold',
+  },
+  disclaimerText: {
+    fontSize: 13,
+    color: '#78350F',
+    fontFamily: 'Poppins_400Regular',
+    lineHeight: 20,
   },
 });
 

@@ -98,7 +98,7 @@ const MedicationListScreen = ({ navigation }) => {
         <Text style={styles.medicationName}>
           {item.medication?.name || item.customMedicationName}
         </Text>
-        <TouchableOpacity onPress={() => handleDelete(item._id)}>
+        <TouchableOpacity onPress={() => handleDelete(item)}>
           <Ionicons name="trash-outline" size={24} color="#EF4444" />
         </TouchableOpacity>
       </View>
@@ -189,7 +189,7 @@ const MedicationListScreen = ({ navigation }) => {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }} // roughly matches a 89.65° angle (horizontal)
                 style={styles.addFirstButton}>
-                <Text style={styles.addFirstButtonText}>Add Your First Reminder</Text>
+                <Text style={styles.addFirstButtonText}>Add Reminder</Text>
               </LinearGradient>
             </TouchableOpacity>
           </View>

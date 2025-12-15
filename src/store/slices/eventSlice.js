@@ -73,14 +73,23 @@ const eventSlice = createSlice({
   name: 'event',
   initialState,
   reducers: {
-    clearError: (state) => {
-      state.error = null;
-    },
     setFilters: (state, action) => {
       state.filters = { ...state.filters, ...action.payload };
     },
+    clearFilters: (state) => {
+      state.filters = {
+        category: null,
+        city: null,
+        upcoming: true,
+        page: 1,
+        limit: 10,
+      };
+    },
     clearSelectedEvent: (state) => {
       state.selectedEvent = null;
+    },
+    clearError: (state) => {
+      state.error = null;
     },
   },
   extraReducers: (builder) => {

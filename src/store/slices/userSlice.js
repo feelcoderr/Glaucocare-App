@@ -1,16 +1,19 @@
 // src/store/slices/userSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { userApi } from '../../services/api/userApi';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { setUser as setAuthUser } from './authSlice';
 // Thunks
 export const updateProfile = createAsyncThunk(
   'user/updateProfile',
-  async (payload, { rejectWithValue }) => {
+  async (payload, { rejectWithValue, dispatch }) => {
     try {
-      const data = await userApi.updateProfile(payload); // apiClient returns response.data
-      return data; // expected shape: { data: updatedUser } or updatedUser depending on backend
+      const data = await userApi.updateProfile(payload);
+      const updatedUser = data?.data ?? data;
+      dispatch(setAuthUser(updatedUser));
+      await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
+      return updatedUser;
     } catch (err) {
-      // Normalize error object similar to other slices
       return rejectWithValue(err.response?.data || { message: err.message });
     }
   }
@@ -18,10 +21,14 @@ export const updateProfile = createAsyncThunk(
 
 export const updateProfilePicture = createAsyncThunk(
   'user/updateProfilePicture',
-  async (formData, { rejectWithValue }) => {
+  async (formData, { rejectWithValue, dispatch }) => {
     try {
       const data = await userApi.updateProfilePicture(formData);
-      return data;
+      const updatedUser = data?.data ?? data;
+      // update auth slice and AsyncStorage
+      dispatch(setAuthUser(updatedUser));
+      await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
+      return updatedUser;
     } catch (err) {
       return rejectWithValue(err.response?.data || { message: err.message });
     }

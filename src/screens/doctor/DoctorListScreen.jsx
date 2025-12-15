@@ -38,10 +38,7 @@ const DoctorListScreen = ({ navigation }) => {
     <TouchableOpacity
       style={styles.doctorCard}
       onPress={() => navigation.navigate('DoctorDetail', { doctorId: item._id })}>
-      <Image
-        source={{ uri: item.profilePhoto || 'https://via.placeholder.com/100' }}
-        style={styles.doctorImage}
-      />
+      <Image source={{ uri: item.profilePhoto }} style={styles.doctorImage} />
       <View style={styles.doctorInfo}>
         <View style={styles.doctorHeader}>
           <View style={styles.doctorNameContainer}>
@@ -94,17 +91,6 @@ const DoctorListScreen = ({ navigation }) => {
           onSubmitEditing={handleSearch}
         />
       </View>
-
-      {/* Location and Filter */}
-      {/* <View style={styles.filterRow}>
-        <View style={styles.locationContainer}>
-          <Ionicons name="location" size={18} color={colors.primaryDark} />
-          <Text style={styles.locationText}>{location}</Text>
-        </View>
-        <TouchableOpacity style={styles.filterButton}>
-          <Ionicons name="options-outline" size={20} color={colors.textPrimary} />
-        </TouchableOpacity>
-      </View> */}
 
       {/* Doctors List */}
       {isLoading ? (

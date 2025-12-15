@@ -10,6 +10,10 @@ import LanguageSelectionScreen from '../../screens/auth/LanguageSelectionScreen'
 import LoginScreen from '../../screens/auth/LoginScreen';
 import RegistrationScreen from '../../screens/auth/RegistrationScreen';
 import NotificationPermissionScreen from '../../screens/auth/NotificationPermissionScreen';
+import AppNavigator from './AppNavigator';
+import DashboardScreen from '../../screens/home/DashboardScreen';
+import TabNavigator from './TabNavigator';
+// import NotificationPreferencesScreen from '../../screens/settings/NotificationPreferencesScreen';
 
 const Stack = createStackNavigator();
 
@@ -27,6 +31,8 @@ const AuthNavigator = () => {
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Registration" component={RegistrationScreen} />
       <Stack.Screen name="NotificationPermission" component={NotificationPermissionScreen} />
+      {/* <Stack.Screen name="Dashboard" component={DashboardScreen} /> */}
+      <Stack.Screen name="Main" component={AppNavigator} />
     </Stack.Navigator>
   );
 };

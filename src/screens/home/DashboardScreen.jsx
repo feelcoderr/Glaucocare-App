@@ -2,7 +2,7 @@
 // Dashboard/Home Screen
 // ============================================================================
 
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -10,22 +10,27 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  FlatList,
+  Dimensions,
   RefreshControl,
   ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { fetchDashboard, dismissInfoCard } from '../../store/slices/dashboardSlice';
 import { colors } from '../../styles/colors';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const CARD_WIDTH = SCREEN_WIDTH - 36;
+
 const DashboardScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const {
     user,
-    nextMedicationReminder,
+    nextMedicationReminders,
     statistics,
     recentDoctors,
     upcomingEvents,
@@ -35,10 +40,16 @@ const DashboardScreen = ({ navigation }) => {
   } = useSelector((state) => state.dashboard);
   console.log(recentDoctors);
   const [refreshing, setRefreshing] = useState(false);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const flatListRef = useRef(null);
   console.log('user : ', user);
   useEffect(() => {
     dispatch(fetchDashboard());
   }, []);
+  // Define default profile image
+  const defaultProfileImage =
+    'https://res.cloudinary.com/datgoelws/image/upload/v1761806946/profile-imgage_lgtgih.jpg';
+  const profileImageUri = user?.profilePicture || defaultProfileImage;
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -111,35 +122,71 @@ const DashboardScreen = ({ navigation }) => {
     </View>
   );
 
+  const onViewableItemsChanged = useRef(({ viewableItems }) => {
+    if (viewableItems.length > 0) {
+      setActiveSlide(viewableItems[0].index || 0);
+    }
+  }).current;
+
+  const viewabilityConfig = useRef({
+    itemVisiblePercentThreshold: 50,
+  }).current;
+
+  const renderMedicationCard = ({ item }) => (
+    <LinearGradient
+      colors={[colors.primaryDark, colors.primaryLight]}
+      style={styles.medicationCard}>
+      <View style={styles.medicationContent}>
+        <View style={styles.medicationIconContainer}>
+          <FontAwesome5 name="pills" size={24} color={colors.white} />
+        </View>
+        <View style={styles.medicationInfo}>
+          <Text style={styles.medicationTitle} numberOfLines={1}>
+            {item.medication?.name || item.customMedicationName || 'Medication'}
+          </Text>
+          <Text style={styles.medicationTime}>{formatTime(item.nextTime)}</Text>
+        </View>
+        <TouchableOpacity
+          style={styles.medicationTimeIcon}
+          onPress={() => navigation.navigate('MedicationList')}>
+          <Ionicons name="time-outline" size={24} color={colors.white} />
+        </TouchableOpacity>
+      </View>
+    </LinearGradient>
+  );
+
+  // ✅ Render medication slider section
   const renderNextMedication = () => {
-    if (!nextMedicationReminder) return null;
+    if (!nextMedicationReminders || nextMedicationReminders.length === 0) {
+      return null;
+    }
 
     return (
-      <LinearGradient
-        colors={[colors.primaryDark, colors.primaryLight]}
-        style={styles.medicationCard}>
-        <View style={styles.medicationContent}>
-          <View style={styles.medicationIconContainer}>
-            <Ionicons name="medical" size={24} color={colors.white} />
+      <View style={styles.medicationSection}>
+        <FlatList
+          ref={flatListRef}
+          data={nextMedicationReminders}
+          renderItem={renderMedicationCard}
+          keyExtractor={(item) => item._id.toString()}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          snapToInterval={CARD_WIDTH + 16} // Card width + margin
+          decelerationRate="fast"
+          contentContainerStyle={styles.medicationSlider}
+          onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={viewabilityConfig}
+        />
+
+        {/* ✅ Pagination Dots */}
+        {nextMedicationReminders.length > 1 && (
+          <View style={styles.paginationDots}>
+            {nextMedicationReminders.map((_, index) => (
+              <View key={index} style={[styles.dot, index === activeSlide && styles.dotActive]} />
+            ))}
           </View>
-          <View style={styles.medicationInfo}>
-            <Text style={styles.medicationTitle}>
-              {nextMedicationReminder.medication?.name || 'Eyedrops'}
-            </Text>
-            <Text style={styles.medicationTime}>
-              {formatTime(nextMedicationReminder.nextTime || '12:30 PM')}
-            </Text>
-          </View>
-          <View style={styles.medicationTimeIcon}>
-            <Ionicons name="time-outline" size={20} color={colors.white} />
-          </View>
-        </View>
-        <View style={styles.paginationDots}>
-          <View style={[styles.dot, styles.dotActive]} />
-          <View style={styles.dot} />
-          <View style={styles.dot} />
-        </View>
-      </LinearGradient>
+        )}
+      </View>
     );
   };
 
@@ -282,14 +329,7 @@ const DashboardScreen = ({ navigation }) => {
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
-            <Image
-              source={{
-                uri:
-                  user?.profilePicture ||
-                  'https://res.cloudinary.com/datgoelws/image/upload/v1761806946/profile-imgage_lgtgih.jpg',
-              }}
-              style={styles.profileImage}
-            />
+            <Image source={{ uri: profileImageUri }} style={styles.profileImage} />
           </TouchableOpacity>
           <View style={styles.headerText}>
             <Text style={styles.greeting}>Hello {user?.fullname?.split(' ')[0] || 'Luna'}</Text>
@@ -463,11 +503,23 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     fontFamily: 'Poppins_400Regular',
   },
+  medicationSection: {
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  medicationSlider: {
+    paddingHorizontal: 20,
+  },
   medicationCard: {
-    marginHorizontal: 16,
+    width: CARD_WIDTH,
     borderRadius: 16,
     padding: 20,
-    marginBottom: 16,
+    marginRight: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 4,
   },
   medicationContent: {
     flexDirection: 'row',
@@ -486,36 +538,40 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   medicationTitle: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '700',
     color: colors.white,
-    fontFamily: 'Poppins_600SemiBold',
     marginBottom: 4,
   },
   medicationTime: {
-    fontSize: 20,
+    fontSize: 28,
     fontWeight: '700',
     color: colors.white,
-    fontFamily: 'Poppins_700Bold',
   },
   medicationTimeIcon: {
-    marginLeft: 8,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   paginationDots: {
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 16,
-    gap: 6,
   },
   dot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: colors.textSecondary + '40',
+    marginHorizontal: 4,
   },
   dotActive: {
-    backgroundColor: colors.white,
     width: 24,
+    backgroundColor: colors.primaryDark,
   },
   infoCard: {
     marginHorizontal: 16,

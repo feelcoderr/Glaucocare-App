@@ -13,7 +13,7 @@ import { colors } from '../../styles/colors';
 
 const AssessmentResultScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { result } = useSelector((state) => state.assessment);
+  const { result, latestResult } = useSelector((state) => state.assessment);
 
   const scaleValue = React.useRef(new Animated.Value(0)).current;
 
@@ -26,12 +26,22 @@ const AssessmentResultScreen = ({ navigation }) => {
     }).start();
   }, []);
 
-  if (!result) {
+  const assessmentData = result || latestResult;
+
+  if (!assessmentData) {
+    console.log('⚠️ No assessment data available, redirecting to home');
     navigation.replace('Main', { screen: 'HomeTab' });
     return null;
   }
 
-  const { riskLevel, riskScore, recommendations } = result;
+  console.log('📝 Assessment Data:', assessmentData);
+
+  // ✅ FIXED: Handle both response formats
+  // Format from submission: { riskLevel, assessment, recommendations }
+  // Format from fetch: { riskScore, riskLevel, answers, ... }
+  const riskLevel = assessmentData.riskLevel?.toLowerCase() || 'low';
+  const riskScore = assessmentData.riskScore || assessmentData.assessment?.riskScore || 0;
+  const recommendations = assessmentData.recommendations || [];
 
   const getRiskColor = () => {
     switch (riskLevel) {
@@ -58,9 +68,7 @@ const AssessmentResultScreen = ({ navigation }) => {
         };
     }
   };
-
   const riskColorScheme = getRiskColor();
-
   const getRiskTitle = () => {
     switch (riskLevel) {
       case 'high':
@@ -85,7 +93,7 @@ const AssessmentResultScreen = ({ navigation }) => {
 
   const handleDone = () => {
     dispatch(clearAnswers());
-    navigation.navigate('Main', { screen: 'HomeTab' });
+    navigation.navigate('Main');
   };
 
   const handleViewHistory = () => {
@@ -116,6 +124,17 @@ const AssessmentResultScreen = ({ navigation }) => {
             </View>
           </LinearGradient>
         </Animated.View>
+
+        <View style={styles.disclaimerCard}>
+          <View style={styles.disclaimerHeader}>
+            <Ionicons name="information-circle-outline" size={20} color="#F59E0B" />
+            <Text style={styles.disclaimerTitle}>Medical Disclaimer</Text>
+          </View>
+          <Text style={styles.disclaimerText}>
+            This app does NOT diagnose, treat, cure, or prevent any medical condition. Always
+            consult qualified healthcare professionals for medical advice.
+          </Text>
+        </View>
 
         {/* Message Card */}
         <View style={styles.messageCard}>
@@ -163,9 +182,7 @@ const AssessmentResultScreen = ({ navigation }) => {
               style={styles.nextStepCard}
               onPress={() => {
                 dispatch(clearAnswers());
-                navigation.navigate('Main', {
-                  screen: 'DoctorsTab',
-                });
+                navigation.replace('DoctorList');
               }}>
               <View style={[styles.nextStepIcon, { backgroundColor: '#E3F2FD' }]}>
                 <Ionicons name="people-outline" size={24} color={colors.primaryDark} />
@@ -181,9 +198,7 @@ const AssessmentResultScreen = ({ navigation }) => {
               style={styles.nextStepCard}
               onPress={() => {
                 dispatch(clearAnswers());
-                navigation.navigate('Main', {
-                  screen: 'BlogTab',
-                });
+                navigation.replace('BlogTab');
               }}>
               <View style={[styles.nextStepIcon, { backgroundColor: '#FEF3C7' }]}>
                 <Ionicons name="book-outline" size={24} color="#F59E0B" />
@@ -199,7 +214,7 @@ const AssessmentResultScreen = ({ navigation }) => {
               style={styles.nextStepCard}
               onPress={() => {
                 dispatch(clearAnswers());
-                navigation.navigate('ExerciseList');
+                navigation.replace('ExerciseList');
               }}>
               <View style={[styles.nextStepIcon, { backgroundColor: '#D1FAE5' }]}>
                 <Ionicons name="fitness-outline" size={24} color="#10B981" />
@@ -215,21 +230,6 @@ const AssessmentResultScreen = ({ navigation }) => {
 
         <View style={{ height: 40 }} />
       </ScrollView>
-
-      {/* Bottom Actions */}
-      <View style={styles.bottomActions}>
-        <TouchableOpacity style={styles.secondaryButton} onPress={handleViewHistory}>
-          <Ionicons name="time-outline" size={20} color={colors.primaryDark} />
-          <Text style={styles.secondaryButtonText}>View History</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.primaryButton, { backgroundColor: riskColorScheme.primary }]}
-          onPress={handleDone}>
-          <Text style={styles.primaryButtonText}>Done</Text>
-          <Ionicons name="checkmark" size={20} color={colors.white} />
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 };
@@ -442,6 +442,32 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.white,
     fontFamily: 'Poppins_600SemiBold',
+  },
+  disclaimerCard: {
+    backgroundColor: '#FEF3C7',
+    borderWidth: 1,
+    borderColor: '#FCD34D',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+  },
+  disclaimerHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    gap: 8,
+  },
+  disclaimerTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#92400E',
+    fontFamily: 'Poppins_600SemiBold',
+  },
+  disclaimerText: {
+    fontSize: 13,
+    color: '#78350F',
+    fontFamily: 'Poppins_400Regular',
+    lineHeight: 20,
   },
 });
 

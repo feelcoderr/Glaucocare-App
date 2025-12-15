@@ -38,4 +38,17 @@ export const userApi = {
       throw error;
     }
   },
+
+  deleteAccount: async (isGuest = false) => {
+    try {
+      console.log('🗑️ Deleting account, isGuest:', isGuest);
+      const endpoint = isGuest ? '/auth/delete-guest' : '/users/account';
+      const response = await apiClient.delete(endpoint);
+      console.log('✅ Account deleted successfully');
+      return response;
+    } catch (error) {
+      console.error('❌ deleteAccount error:', error);
+      throw error;
+    }
+  },
 };

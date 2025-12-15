@@ -15,8 +15,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
-import { Ionicons } from '@expo/vector-icons';
-import { Video } from 'expo-av';
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import YoutubePlayer from 'react-native-youtube-iframe';
 import {
   fetchEducationalContentBySlug, // ✅ FIXED: Use the correct thunk
   clearCurrentContent,
@@ -151,12 +151,12 @@ const GlaucomaGuideScreen = ({ navigation, route }) => {
             style={styles.heroImage}
             resizeMode="cover"
           />
-          <View style={styles.heroOverlay}>
+          {/* <View style={styles.heroOverlay}>
             <Text style={styles.heroTitle}>{currentContent.title}</Text>
             {currentContent.shortDescription && (
               <Text style={styles.heroSubtitle}>{currentContent.shortDescription}</Text>
             )}
-          </View>
+          </View> */}
         </View>
       )}
 
@@ -235,30 +235,65 @@ const TextSection = ({ section }) => (
 );
 
 // Video Section
-const VideoSection = ({ section }) => (
-  <View style={styles.section}>
-    {section.title && <Text style={styles.sectionTitle}>{section.title}</Text>}
+const VideoSection = ({ section }) => {
+  const [showPlayer, setShowPlayer] = useState(false);
 
-    <View style={styles.videoContainer}>
-      <Image
-        source={{ uri: section.media?.thumbnail || section.media?.videoUrl }}
-        style={styles.videoThumbnail}
-        resizeMode="cover"
-      />
-      <TouchableOpacity style={styles.playButton}>
-        <Ionicons name="play" size={32} color={colors.white} />
-      </TouchableOpacity>
-      {section.media?.durationSec && (
-        <View style={styles.videoDuration}>
-          <Text style={styles.videoDurationText}>
-            {Math.floor(section.media.durationSec / 60)}:
-            {(section.media.durationSec % 60).toString().padStart(2, '0')}
-          </Text>
+  // Extract YouTube video ID from any YouTube URL
+  const getYouTubeId = (url) => {
+    if (!url) return null;
+    const match = url.match(/(?:v=|\.be\/|embed\/)([^&?]+)/);
+    return match ? match[1] : null;
+  };
+
+  const videoId = getYouTubeId(section.media?.videoUrl);
+
+  return (
+    <View style={styles.section}>
+      {section.title && <Text style={styles.sectionTitle}>{section.title}</Text>}
+
+      {/* PLAYER ACTIVE */}
+      {showPlayer && videoId ? (
+        <View style={{ height: 220, borderRadius: 12, overflow: 'hidden' }}>
+          <YoutubePlayer
+            height={220}
+            play={true}
+            videoId={videoId}
+            onChangeState={(state) => {
+              if (state === 'ended') setShowPlayer(false);
+            }}
+          />
         </View>
+      ) : (
+        /* THUMBNAIL VIEW */
+        <TouchableOpacity
+          style={styles.videoContainer}
+          onPress={() => setShowPlayer(true)}
+          activeOpacity={0.9}>
+          <Image
+            source={{ uri: section.media?.thumbnail }}
+            style={styles.videoThumbnail}
+            resizeMode="cover"
+          />
+
+          {/* Play button overlay */}
+          <View style={styles.playButton}>
+            <Ionicons name="play" size={32} color={colors.white} />
+          </View>
+
+          {/* Duration Badge */}
+          {section.media?.durationSec && (
+            <View style={styles.videoDuration}>
+              <Text style={styles.videoDurationText}>
+                {Math.floor(section.media.durationSec / 60)}:
+                {(section.media.durationSec % 60).toString().padStart(2, '0')}
+              </Text>
+            </View>
+          )}
+        </TouchableOpacity>
       )}
     </View>
-  </View>
-);
+  );
+};
 
 // List Section (Prevention Tips style)
 const ListSection = ({ section }) => (
@@ -287,7 +322,9 @@ const CardsSection = ({ section }) => (
         .map((card, index) => (
           <View key={index} style={[styles.card, styles.treatmentCard]}>
             <View style={styles.cardHeader}>
-              {card.icon && <Ionicons name={card.icon} size={24} color={colors.success} />}
+              {card.icon && (
+                <MaterialCommunityIcons name={card.icon} size={24} color={colors.success} />
+              )}
               <Text style={styles.cardTitle}>{card.title}</Text>
             </View>
 

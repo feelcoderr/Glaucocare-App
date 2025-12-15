@@ -59,10 +59,8 @@ export const clearRecentSearches = createAsyncThunk(
 const initialState = {
   query: '',
   results: {
-    doctors: { count: 0, items: [] },
     blogs: { count: 0, items: [] },
     events: { count: 0, items: [] },
-    educational: { count: 0, items: [] },
   },
   recentSearches: [],
   popularSearches: [],
@@ -79,10 +77,8 @@ const searchSlice = createSlice({
     },
     clearResults: (state) => {
       state.results = {
-        doctors: { count: 0, items: [] },
         blogs: { count: 0, items: [] },
         events: { count: 0, items: [] },
-        educational: { count: 0, items: [] },
       };
       state.query = '';
     },

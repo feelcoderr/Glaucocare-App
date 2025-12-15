@@ -338,15 +338,15 @@ const DocumentListScreen = ({ navigation, route }) => {
                     </View>
                   </View>
 
-                  <View style={styles.infoItem}>
+                  {/* <View style={styles.infoItem}>
                     <Ionicons name="file-tray" size={20} color={colors.textSecondary} />
                     <View style={styles.infoItemText}>
                       <Text style={styles.infoLabel}>Type</Text>
                       <Text style={styles.infoValue}>{selectedDocument.mimeType || 'Unknown'}</Text>
                     </View>
-                  </View>
+                  </View> */}
 
-                  <View style={styles.infoItem}>
+                  {/* <View style={styles.infoItem}>
                     <Ionicons name="time" size={20} color={colors.textSecondary} />
                     <View style={styles.infoItemText}>
                       <Text style={styles.infoLabel}>Uploaded</Text>
@@ -354,7 +354,7 @@ const DocumentListScreen = ({ navigation, route }) => {
                         {formatDate(selectedDocument.uploadedAt)}
                       </Text>
                     </View>
-                  </View>
+                  </View> */}
                 </View>
 
                 {selectedDocument.description && (
@@ -465,7 +465,7 @@ const DocumentListScreen = ({ navigation, route }) => {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[styles.sortButton, sortBy === 'type' && styles.sortButtonActive]}
             onPress={() => setSortBy('type')}>
             <Ionicons
@@ -476,7 +476,7 @@ const DocumentListScreen = ({ navigation, route }) => {
             <Text style={[styles.sortButtonText, sortBy === 'type' && styles.sortButtonTextActive]}>
               Type
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
 
@@ -490,7 +490,7 @@ const DocumentListScreen = ({ navigation, route }) => {
           </Text>
           <TouchableOpacity
             style={styles.uploadButton}
-            onPress={() => navigation.navigate('DocumentDashboard')}>
+            onPress={() => navigation.navigate('DocumentDashboardScreen')}>
             <Ionicons name="add" size={20} color={colors.white} />
             <Text style={styles.uploadButtonText}>Add Document</Text>
           </TouchableOpacity>

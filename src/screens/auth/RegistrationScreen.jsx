@@ -14,6 +14,7 @@ import {
   Platform,
   Alert,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
@@ -69,6 +70,18 @@ const RegistrationScreen = ({ navigation }) => {
       Alert.alert('Error', 'Please enter your first name');
       return;
     }
+    if (!formData.dateOfBirth) {
+      Alert.alert('Error', 'Please enter your date of birth');
+      return;
+    }
+    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(formData.email)) {
+      Alert.alert('Error', 'Please enter your valid email');
+      return;
+    }
+    if (!formData.gender) {
+      Alert.alert('Error', 'Please enter your gender');
+      return;
+    }
     if (!formData.lastName.trim()) {
       Alert.alert('Error', 'Please enter your last name');
       return;
@@ -115,7 +128,7 @@ const RegistrationScreen = ({ navigation }) => {
               <Text style={styles.label}>Last Name</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Loream"
+                placeholder="Ipsum"
                 placeholderTextColor={colors.textSecondary}
                 value={formData.lastName}
                 onChangeText={(text) => setFormData({ ...formData, lastName: text })}
@@ -125,21 +138,23 @@ const RegistrationScreen = ({ navigation }) => {
               <View style={styles.inputContainer}>
                 <TextInput
                   style={[styles.input, styles.inputWithIcon]}
-                  placeholder="demo@Example.Com"
+                  placeholder="yourname@Example.Com"
                   placeholderTextColor={colors.textSecondary}
                   keyboardType="email-address"
                   autoCapitalize="none"
                   value={formData.email}
                   onChangeText={(text) => setFormData({ ...formData, email: text })}
                 />
-                {formData.email && formData.email.includes('@') && (
-                  <Ionicons
-                    name="checkmark-circle"
-                    size={24}
-                    color="#10B981"
-                    style={styles.inputIcon}
-                  />
-                )}
+                {formData.email &&
+                  /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(formData.email) &&
+                  formData.email.includes('@') && (
+                    <Ionicons
+                      name="checkmark-circle"
+                      size={24}
+                      color="#10B981"
+                      style={styles.inputIcon}
+                    />
+                  )}
               </View>
 
               <Text style={styles.label}>Date of Birth</Text>
@@ -196,7 +211,14 @@ const RegistrationScreen = ({ navigation }) => {
                 <View style={[styles.checkbox, termsAccepted && styles.checkboxChecked]}>
                   {termsAccepted && <Ionicons name="checkmark" size={16} color={colors.white} />}
                 </View>
-                <Text style={styles.termsText}>Terms & Conditions</Text>
+                <Text style={styles.termsText}>
+                  I accept the{' '}
+                  <Text
+                    style={[styles.termsText, styles.underlineText]}
+                    onPress={() => Linking.openURL('https://www.glaucocare.in/termsandconditions')}>
+                    Terms & Conditions
+                  </Text>
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -327,6 +349,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.textPrimary,
     fontFamily: 'Poppins_400Regular',
+  },
+  underlineText: {
+    textDecorationLine: 'underline',
+    color: colors.primaryDark,
   },
   registerButton: {
     backgroundColor: colors.primaryDark,

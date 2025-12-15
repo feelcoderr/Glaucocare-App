@@ -42,8 +42,7 @@ const SplashScreen = ({ navigation }) => {
       await new Promise((resolve) => setTimeout(resolve, 2500));
 
       // Check if user has seen onboarding
-      // const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
-      const hasSeenOnboarding = 'false'; // TEMPORARY OVERRIDE FOR TESTING
+      const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
 
       // Check if user is authenticated
       const accessToken = await AsyncStorage.getItem('accessToken');
@@ -52,11 +51,11 @@ const SplashScreen = ({ navigation }) => {
       if (accessToken && user) {
         // User is logged in - go to dashboard
         dispatch(checkAuthStatus());
-        // navigation.replace('Dashboard');
-        navigation.replace('Onboarding');
+        navigation.replace('Main');
+        // navigation.replace('Onboarding');
       } else if (hasSeenOnboarding === 'true') {
         // User has seen onboarding - go to language selection
-        navigation.replace('LanguageSelection');
+        navigation.replace('Login');
       } else {
         // First time user - show onboarding
         navigation.replace('Onboarding');

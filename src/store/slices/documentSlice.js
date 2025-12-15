@@ -23,6 +23,7 @@ export const fetchUserDocuments = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const response = await documentApi.getUserDocuments(params);
+      console.log('Fetched Documents:', response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -78,7 +79,7 @@ const initialState = {
     Prescriptions: 0,
     'Medical Reports': 0,
     'Insurance Documents': 0,
-    'X-rays/Images': 0,
+    'X Rays Images': 0,
     Other: 0,
   },
 };
@@ -127,7 +128,7 @@ const documentSlice = createSlice({
           Prescriptions: 0,
           'Medical Reports': 0,
           'Insurance Documents': 0,
-          'X-rays/Images': 0,
+          'X Rays Images': 0,
           Other: 0,
         };
         action.payload.documents.forEach((doc) => {

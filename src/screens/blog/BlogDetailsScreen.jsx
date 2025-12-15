@@ -193,39 +193,6 @@ const BlogDetailScreen = ({ route, navigation }) => {
               </View>
             </View>
           </View>
-
-          {/* Related Articles */}
-          <View style={styles.relatedSection}>
-            <Text style={styles.relatedTitle}>Related Articles</Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.relatedScroll}>
-              {[1, 2].map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.relatedCard}
-                  onPress={() => navigation.push('BlogDetail', { blogId: `related-${item}` })}>
-                  <Image
-                    source={{ uri: 'https://via.placeholder.com/200x120' }}
-                    style={styles.relatedImage}
-                  />
-                  <View style={styles.relatedContent}>
-                    <View style={styles.relatedBadge}>
-                      <Text style={styles.relatedBadgeText}>VisionCare</Text>
-                    </View>
-                    <View style={styles.relatedDate}>
-                      <Ionicons name="calendar-outline" size={12} color={colors.textSecondary} />
-                      <Text style={styles.relatedDateText}>Feb 15, 2024</Text>
-                    </View>
-                  </View>
-                  <Text style={styles.relatedCardTitle} numberOfLines={2}>
-                    The Future of Artificial Intelligence in Modern Technology
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
         </View>
 
         <View style={{ height: 40 }} />

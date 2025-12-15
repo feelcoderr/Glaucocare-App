@@ -1,7 +1,8 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
-
+import { store } from '../../store/store';
+import { forceLogout } from '../../store/slices/authSlice';
 // IMPORTANT: For Android Emulator, use 10.0.2.2 instead of localhost
 // For iOS Simulator, use localhost
 // For physical device, use your computer's IP address
@@ -10,14 +11,17 @@ const getBaseURL = () => {
     // Development mode
     if (Platform.OS === 'android') {
       // Android emulator
-      return 'http://192.168.242.147:8000/api/v1';
+      // return 'http://192.168.250.147:8000/api/v1';
+      return process.env.API_BASE_URL || 'https://api.glaucocare.in/api/v1';
     } else {
       // iOS simulator or other
-      return 'http://192.168.242.147:8000/api/v1';
+      // return 'http://192.168.250.147:8000/api/v1';
+      return process.env.API_BASE_URL || 'https://api.glaucocare.in/api/v1';
     }
   }
   // Production mode
-  return 'http://192.168.242.147:8000/api/v1';
+  return 'https://api.glaucocare.in/api/v1';
+  // return 'http://192.168.250.147:8000/api/v1';
 };
 
 const API_BASE_URL = getBaseURL();
@@ -103,9 +107,16 @@ apiClient.interceptors.response.use(
           return apiClient(originalRequest);
         }
       } catch (refreshError) {
+        // Clear storage and force logout
         await AsyncStorage.multiRemove(['accessToken', 'refreshToken', 'user']);
+        store.dispatch(forceLogout());
         return Promise.reject(refreshError);
       }
+
+      // If no refresh token, force logout
+      console.log('🚪 No refresh token available - Forcing logout');
+      await AsyncStorage.multiRemove(['accessToken', 'refreshToken', 'user']);
+      store.dispatch(forceLogout());
     }
 
     return Promise.reject(error.response?.data || error);

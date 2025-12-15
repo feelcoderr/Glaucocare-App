@@ -3,17 +3,32 @@
 // ============================================================================
 
 import React, { useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Image,
+  Alert,
+  Linking,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
-import { logout } from '../../store/slices/authSlice';
+import { logout, deleteAccount } from '../../store/slices/authSlice';
 import { colors } from '../../styles/colors';
+import { resetToLogin } from '../../components/navigation/navigationRef';
+import notificationService from '../../services/notifications/notificationService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SettingsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
+  const { user: dashboardUser } = useSelector((state) => state.dashboard);
+  const { user: authUser } = useSelector((state) => state.auth);
 
+  // Prefer dashboard user (has presigned URL) but fallback to auth user
+  const user = dashboardUser || authUser;
   const handleLogout = () => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
       { text: 'Cancel', style: 'cancel' },
@@ -28,17 +43,55 @@ const SettingsScreen = ({ navigation }) => {
   };
 
   const handleDeleteAccount = () => {
+    const isGuest = user?.isGuest || false;
+
     Alert.alert(
       'Delete Account',
-      'Are you sure you want to delete your account? This action cannot be undone. All your data will be permanently deleted.',
+      isGuest
+        ? 'Are you sure you want to delete your guest account? All your data will be permanently deleted.'
+        : 'Are you sure you want to delete your account? This action cannot be undone. Your account will be deleted and all your data will be permanently deleted.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
           text: 'Delete',
           style: 'destructive',
-          onPress: () => {
-            // TODO: Implement delete account API
-            console.log('Delete account');
+          onPress: async () => {
+            try {
+              console.log('🗑️ Starting account deletion...');
+
+              // Cancel all notifications
+              // await notificationService.cancelAllNotifications();
+
+              // Delete account via API
+              // await dispatch(deleteAccount()).unwrap();
+
+              // Clear all local storage
+              await AsyncStorage.clear();
+
+              // console.log('✅ Account deleted successfully');
+              Linking.openURL('https://www.glaucocare.in/deleteaccount').catch((err) =>
+                console.error('Failed to open delete account:', err)
+              );
+              // Show success message
+              // Alert.alert(
+              //   'Account Deleted',
+              //   isGuest
+              //     ? 'Your guest account has been deleted successfully.'
+              //     : 'Your account has been deactivated successfully.',
+              //   [
+              //     {
+              //       text: 'OK',
+              //       onPress: () => {
+              //         // Navigation will automatically happen due to RootNavigator
+              //         // No need for manual navigation reset
+              //       },
+              //     },
+              //   ]
+              // );
+            } catch (error) {
+              console.error('❌ Delete account error:', error);
+              Alert.alert('Error', error.message || 'Failed to delete account. Please try again.');
+            }
           },
         },
       ]
@@ -100,23 +153,18 @@ const SettingsScreen = ({ navigation }) => {
           {renderSettingItem('person-outline', 'Profile Information', () =>
             navigation.navigate('EditProfile')
           )}
-          {/* {renderSettingItem('lock-closed-outline', 'Privacy Settings', () =>
-            navigation.navigate('PrivacySettings')
-          )} */}
+
           {renderSettingItem('notifications-outline', 'Notification Preferences', () =>
             navigation.navigate('NotificationPreferences')
           )}
-          {renderSettingItem('language-outline', 'Language & Region', () =>
+          {/* {renderSettingItem('language-outline', 'Language & Region', () =>
             navigation.navigate('LanguageSettings')
-          )}
+          )} */}
         </View>
 
         {/* Medical Settings */}
         {renderSectionHeader('Medical Settings:')}
         <View style={styles.settingSection}>
-          {renderSettingItem('time-outline', 'Reminder Settings', () =>
-            navigation.navigate('ReminderSettings')
-          )}
           {renderSettingItem('time-outline', 'Glaucoma Guide', () =>
             navigation.navigate('GlaucomaGuide', { slug: 'glaucoma-guide' })
           )}

@@ -15,10 +15,9 @@ WebBrowser.maybeCompleteAuthSession();
 
 // Replace these with your actual Google OAuth Client IDs
 const GOOGLE_CONFIG = {
-  expoClientId: 'YOUR_EXPO_CLIENT_ID.apps.googleusercontent.com',
   iosClientId: 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com',
-  androidClientId: '675216428598-td6flc3gvqh85grosck62k48crqigqog.apps.googleusercontent.com',
-  webClientId: '675216428598-tik4d5ms4f2c4k8qu63o5p6hmhbtkju0.apps.googleusercontent.com',
+  androidClientId: '762154220704-pqqi9h6jhra2c63capp4l196sss92q2i.apps.googleusercontent.com',
+  webClientId: '762154220704-q6cm8l53seatd93ahd66dq632f8p999q.apps.googleusercontent.com',
 };
 
 // ============================================================================
@@ -27,7 +26,6 @@ const GOOGLE_CONFIG = {
 
 export const useGoogleAuth = () => {
   const [request, response, promptAsync] = Google.useAuthRequest({
-    expoClientId: GOOGLE_CONFIG.expoClientId,
     iosClientId: GOOGLE_CONFIG.iosClientId,
     androidClientId: GOOGLE_CONFIG.androidClientId,
     webClientId: GOOGLE_CONFIG.webClientId,

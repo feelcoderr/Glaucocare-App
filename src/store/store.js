@@ -14,6 +14,7 @@ import notificationReducer from './slices/notificationSlice';
 import blogReducer from './slices/blogSlice';
 import educationalContentReducer from './slices/educationalContentSlice';
 import assessmentReducer from './slices/assessmentSlice';
+import notificationPreferencesReducer from './slices/notificationPreferencesSlice';
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -27,6 +28,7 @@ const store = configureStore({
     blog: blogReducer,
     assessment: assessmentReducer,
     educationalContent: educationalContentReducer,
+    notificationPreferences: notificationPreferencesReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

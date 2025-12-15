@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "762154220704",
+    "project_id": "glaucocare-app",
+    "storage_bucket": "glaucocare-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:762154220704:android:85a34216c986f03816ddc5",
+        "android_client_info": {
+          "package_name": "com.glaucocare.glaucocare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "762154220704-3u197c4ccd5h19090sfbbfnjm0jj8mck.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.glaucocare.glaucocare",
+            "certificate_hash": "5d2e2ee85059b881725f1a7d211d86e1adf9bc18"
+          }
+        },
+        {
+          "client_id": "762154220704-idqkrjtupk2d0ep6g6tnnk9gvtieumcm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.glaucocare.glaucocare",
+            "certificate_hash": "324622e65a17db6539f8665e8827b86c929bb74f"
+          }
+        },
+        {
+          "client_id": "762154220704-pqqi9h6jhra2c63capp4l196sss92q2i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.glaucocare.glaucocare",
+            "certificate_hash": "30afbbc574a4358c5b3c02d97f3c05975aa83be5"
+          }
+        },
+        {
+          "client_id": "762154220704-q6cm8l53seatd93ahd66dq632f8p999q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC26iibXEj6geb9pLG1PcbDdGbPj2sntN4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "762154220704-q6cm8l53seatd93ahd66dq632f8p999q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

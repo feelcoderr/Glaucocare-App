@@ -14,11 +14,11 @@ const NotificationPermissionScreen = ({ navigation }) => {
     // For now, just navigate to dashboard
     // Firebase notifications will be set up when you configure Firebase properly
     console.log('Notification permission requested');
-    navigation.replace('Home');
+    navigation.replace('App');
   };
 
   const handleMaybeLater = () => {
-    navigation.replace('Home');
+    navigation.replace('App');
   };
 
   return (

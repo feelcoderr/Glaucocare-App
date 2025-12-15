@@ -36,13 +36,6 @@ const EXERCISES_AND_GAMES = [
     level: 'Beginner',
     icon: 'https://res.cloudinary.com/datgoelws/image/upload/v1762162971/eye-icon_maa0eg.png',
   },
-  {
-    id: '4',
-    title: 'Color Spot Challenge',
-    type: 'Exercise',
-    level: 'Beginner',
-    icon: 'https://res.cloudinary.com/datgoelws/image/upload/v1762162971/eye-icon_maa0eg.png',
-  },
 ];
 
 const ExerciseListScreen = ({ navigation }) => {
