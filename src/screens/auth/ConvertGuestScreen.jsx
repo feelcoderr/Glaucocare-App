@@ -115,8 +115,7 @@ const ConvertGuestScreen = ({ navigation, route }) => {
             </View>
             <Text style={styles.title}>Unlock All Features</Text>
             <Text style={styles.subtitle}>
-              Create an account to save reminders, upload documents, and get personalized health
-              tracking.
+              Create an account to save reminders, upload documents.
             </Text>
             {/* ✅ UPDATED: Show benefits
         <View style={styles.benefitsContainer}>

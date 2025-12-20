@@ -80,10 +80,7 @@ const ExerciseListScreen = ({ navigation }) => {
   const renderExerciseCard = ({ item }) => (
     <TouchableOpacity
       style={styles.exerciseCard}
-      onPress={() => {
-        // Just show alert for static page
-        alert(`${item.title} - Coming Soon!`);
-      }}
+      onPress={() => handlePlayPress(item)}
       activeOpacity={0.7}>
       {/* Icon/Image */}
       <View style={styles.iconContainer}>

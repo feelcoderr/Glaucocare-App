@@ -70,18 +70,18 @@ const RegistrationScreen = ({ navigation }) => {
       Alert.alert('Error', 'Please enter your first name');
       return;
     }
-    if (!formData.dateOfBirth) {
-      Alert.alert('Error', 'Please enter your date of birth');
-      return;
-    }
+    // if (!formData.dateOfBirth) {
+    //   Alert.alert('Error', 'Please enter your date of birth');
+    //   return;
+    // }
     if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(formData.email)) {
       Alert.alert('Error', 'Please enter your valid email');
       return;
     }
-    if (!formData.gender) {
-      Alert.alert('Error', 'Please enter your gender');
-      return;
-    }
+    // if (!formData.gender) {
+    //   Alert.alert('Error', 'Please enter your gender');
+    //   return;
+    // }
     if (!formData.lastName.trim()) {
       Alert.alert('Error', 'Please enter your last name');
       return;

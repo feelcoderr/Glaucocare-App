@@ -91,10 +91,10 @@ const AboutAppScreen = ({ navigation }) => {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>About GlaucoCare</Text>
           <Text style={styles.sectionText}>
-            GlaucoCare is a comprehensive mobile application designed to help individuals manage
-            glaucoma through medication reminders, educational resources, and community support. Our
-            mission is to empower patients with tools and knowledge to preserve their vision and
-            improve their quality of life.
+            GlaucoCare is a health awareness and educational application focused on eye health and
+            glaucoma prevention. The app helps users learn about glaucoma, track their eye health
+            information, and maintain medication schedules. This is NOT a medical application - it
+            is a personal health information organizer and educational resource.
           </Text>
         </View>
 
@@ -104,7 +104,7 @@ const AboutAppScreen = ({ navigation }) => {
           <View style={styles.featuresList}>
             <View style={styles.featureItem}>
               <Ionicons name="checkmark-circle" size={20} color={colors.primaryDark} />
-              <Text style={styles.featureText}>Medication reminders & tracking</Text>
+              <Text style={styles.featureText}>Medication reminders</Text>
             </View>
             <View style={styles.featureItem}>
               <Ionicons name="checkmark-circle" size={20} color={colors.primaryDark} />

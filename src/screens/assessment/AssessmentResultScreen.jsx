@@ -36,9 +36,6 @@ const AssessmentResultScreen = ({ navigation }) => {
 
   console.log('📝 Assessment Data:', assessmentData);
 
-  // ✅ FIXED: Handle both response formats
-  // Format from submission: { riskLevel, assessment, recommendations }
-  // Format from fetch: { riskScore, riskLevel, answers, ... }
   const riskLevel = assessmentData.riskLevel?.toLowerCase() || 'low';
   const riskScore = assessmentData.riskScore || assessmentData.assessment?.riskScore || 0;
   const recommendations = assessmentData.recommendations || [];
@@ -171,7 +168,7 @@ const AssessmentResultScreen = ({ navigation }) => {
         </View>
 
         {/* Next Steps Section */}
-        <View style={styles.section}>
+        {/* <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Ionicons name="compass-outline" size={24} color={colors.primaryDark} />
             <Text style={styles.sectionTitle}>Next Steps</Text>
@@ -226,7 +223,7 @@ const AssessmentResultScreen = ({ navigation }) => {
               <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
-        </View>
+        </View> */}
 
         <View style={{ height: 40 }} />
       </ScrollView>

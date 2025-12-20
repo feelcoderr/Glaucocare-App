@@ -15,17 +15,17 @@ const onboardingData = [
   {
     id: 1,
     title: 'Welcome to GlaucoCare',
-    subtitle: 'Your personal glaucoma care companion',
+    subtitle: 'An app dedicated to raising awareness about glaucoma and eye health',
   },
   {
     id: 2,
-    title: 'Track Your Medication',
-    subtitle: 'Never miss a dose with smart reminders',
+    title: 'Learn About Glaucoma',
+    subtitle: 'Understand symptoms, risk factors, and the importance of early eye checkups',
   },
   {
     id: 3,
-    title: 'Connect with Experts',
-    subtitle: 'Find the best eye care specialists near you',
+    title: 'Find Eye Care Support',
+    subtitle: 'Explore trusted eye care professionals and helpful resources near you',
   },
 ];
 

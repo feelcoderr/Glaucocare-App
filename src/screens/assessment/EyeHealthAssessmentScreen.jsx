@@ -131,7 +131,7 @@ const EyeHealthAssessmentScreen = ({ navigation }) => {
           <TouchableOpacity onPress={() => navigation.replace('Settings')}>
             <Ionicons name="chevron-back" size={24} color={colors.textPrimary} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Eye Health Assessment</Text>
+          <Text style={styles.headerTitle}>Eye Health Score</Text>
           <View style={{ width: 24 }} />
         </View>
 
@@ -151,9 +151,9 @@ const EyeHealthAssessmentScreen = ({ navigation }) => {
               consult qualified healthcare professionals for medical advice.
             </Text>
           </View>
-          <Text style={styles.resultsTitle}>Assessment Completed</Text>
+          <Text style={styles.resultsTitle}>Eye Score</Text>
           <Text style={styles.resultsSubtitle}>
-            You completed your eye health assessment on{' '}
+            You completed your eye health score on{' '}
             {new Date(latestResult.createdAt).toLocaleDateString('en-US', {
               month: 'long',
               day: 'numeric',
@@ -179,7 +179,7 @@ const EyeHealthAssessmentScreen = ({ navigation }) => {
           <View style={styles.resultsActions}>
             <TouchableOpacity style={styles.retakeButton} onPress={handleRetakeAssessment}>
               <Ionicons name="refresh-outline" size={20} color={colors.primaryDark} />
-              <Text style={styles.retakeButtonText}>Retake Assessment</Text>
+              <Text style={styles.retakeButtonText}>Retake</Text>
             </TouchableOpacity>
           </View>
 
@@ -307,7 +307,7 @@ const EyeHealthAssessmentScreen = ({ navigation }) => {
     // Save current answer before submitting
     saveCurrentAnswer();
 
-    Alert.alert('Submit Assessment', 'Are you sure you want to submit your assessment?', [
+    Alert.alert('Submit', 'Are you sure you want to submit and get your eye health score?', [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Submit',
@@ -368,7 +368,7 @@ const EyeHealthAssessmentScreen = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back" size={24} color={colors.textPrimary} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Eye Health Assessment</Text>
+        <Text style={styles.headerTitle}>Eye Health Score</Text>
         <TouchableOpacity onPress={handleSkip}>
           <Text style={styles.saveText}>Save</Text>
         </TouchableOpacity>

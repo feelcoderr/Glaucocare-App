@@ -344,7 +344,6 @@ const authSlice = createSlice({
         state.accessToken = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken;
         state.isAuthenticated = true;
-        state.requiresRegistration = false;
         state.isGuest = false;
         state.requiresRegistration = false;
       })

@@ -38,7 +38,7 @@ const DashboardScreen = ({ navigation }) => {
     infoCard,
     isLoading,
   } = useSelector((state) => state.dashboard);
-  console.log(recentDoctors);
+
   const [refreshing, setRefreshing] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const flatListRef = useRef(null);
@@ -218,7 +218,7 @@ const DashboardScreen = ({ navigation }) => {
     return (
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Recent doctor interaction</Text>
+          <Text style={styles.sectionTitle}>Featured doctors</Text>
           <TouchableOpacity onPress={() => navigation.navigate('DoctorList')}>
             <Text style={styles.seeAllText}>See all</Text>
           </TouchableOpacity>

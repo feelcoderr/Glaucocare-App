@@ -67,7 +67,7 @@ const SettingsScreen = ({ navigation }) => {
 
               // Clear all local storage
               await AsyncStorage.clear();
-
+              dispatch(logout());
               // console.log('✅ Account deleted successfully');
               Linking.openURL('https://www.glaucocare.in/deleteaccount').catch((err) =>
                 console.error('Failed to open delete account:', err)
@@ -168,7 +168,7 @@ const SettingsScreen = ({ navigation }) => {
           {renderSettingItem('time-outline', 'Glaucoma Guide', () =>
             navigation.navigate('GlaucomaGuide', { slug: 'glaucoma-guide' })
           )}
-          {renderSettingItem('clipboard-outline', 'Eye Health Assessment', () =>
+          {renderSettingItem('clipboard-outline', 'Eye Health Score', () =>
             navigation.navigate('EyeHealthAssessment')
           )}
           {renderSettingItem('document-text', 'My document', () =>

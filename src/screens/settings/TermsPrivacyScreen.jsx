@@ -1,5 +1,5 @@
 // FILE: src/screens/settings/TermsPrivacyScreen.jsx
-// Terms & Privacy Screen
+// Terms & Privacy Screen (Health & Fitness – Non-Medical)
 // ============================================================================
 
 import React from 'react';
@@ -21,96 +21,122 @@ const TermsPrivacyScreen = ({ navigation }) => {
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <Text style={styles.lastUpdated}>Last updated: June 24, 2025</Text>
+        <Text style={styles.lastUpdated}>Last updated: December 20, 2025</Text>
 
         <Text style={styles.introText}>
-          At GlaucoCare, we are committed to protecting your personal data and ensuring transparency
-          in how we collect, use, and safeguard your information.
+          GlaucoCare is a Health & Fitness application designed for education, awareness, and
+          personal organization related to eye health. This app is NOT a medical application and
+          does NOT provide diagnosis, treatment, or medical advice.
         </Text>
 
-        <Text style={styles.sectionTitle}>Terms of Use</Text>
+        {/* ================= TERMS ================= */}
 
-        <Text style={styles.subSectionTitle}>1. App Usage</Text>
+        <Text style={styles.sectionTitle}>Terms & Conditions</Text>
+
+        <Text style={styles.subSectionTitle}>1. App Purpose</Text>
         <Text style={styles.bodyText}>
-          GlaucoCare is a wellness platform for educational and tracking purposes. It does not
-          replace professional medical advice.
+          GlaucoCare provides educational content about glaucoma and eye health, personal
+          organization tools, reminders, and general eye wellness activities. The app is intended
+          for learning, awareness, and convenience only.
         </Text>
 
-        <Text style={styles.subSectionTitle}>2. User Responsibilities</Text>
+        <Text style={styles.subSectionTitle}>2. Medical Disclaimer</Text>
+        <Text style={styles.bodyText}>
+          GlaucoCare does NOT diagnose, treat, cure, or prevent any medical condition. The app does
+          NOT replace professional medical advice. Always consult a qualified ophthalmologist or
+          healthcare professional for medical decisions.
+        </Text>
+
+        <Text style={styles.subSectionTitle}>3. Eligibility</Text>
+        <Text style={styles.bodyText}>
+          You must be at least 18 years old to use this app. Use by minors is not permitted.
+        </Text>
+
+        <Text style={styles.subSectionTitle}>4. User Responsibilities</Text>
         <View style={styles.bulletList}>
           <View style={styles.bulletItem}>
             <Text style={styles.bullet}>•</Text>
-            <Text style={styles.bulletText}>Keep your login information secure</Text>
+            <Text style={styles.bulletText}>
+              Use the app only for educational and organizational purposes
+            </Text>
           </View>
           <View style={styles.bulletItem}>
             <Text style={styles.bullet}>•</Text>
-            <Text style={styles.bulletText}>Do not share false or harmful content</Text>
+            <Text style={styles.bulletText}>
+              Do not rely on the app for medical decisions or diagnosis
+            </Text>
           </View>
           <View style={styles.bulletItem}>
             <Text style={styles.bullet}>•</Text>
-            <Text style={styles.bulletText}>Use the app respectfully within the community</Text>
+            <Text style={styles.bulletText}>Keep your account credentials secure</Text>
+          </View>
+          <View style={styles.bulletItem}>
+            <Text style={styles.bullet}>•</Text>
+            <Text style={styles.bulletText}>Do not upload false, illegal, or harmful content</Text>
           </View>
         </View>
 
-        <Text style={styles.subSectionTitle}>3. Content Ownership</Text>
+        <Text style={styles.subSectionTitle}>5. Content Ownership</Text>
         <Text style={styles.bodyText}>
-          Any documents you upload remain yours, And only you can access it the documents section.
+          Any personal documents or information you upload remain your property. These are stored
+          only for your personal organization and are accessible only to you.
         </Text>
 
-        <Text style={styles.subSectionTitle}>4. Updates & Changes</Text>
+        <Text style={styles.subSectionTitle}>6. Updates & Changes</Text>
         <Text style={styles.bodyText}>
-          We may update our terms occasionally. You will be notified within the app when updates are
-          published.
+          We may update these Terms from time to time. When material changes are made, we will
+          notify you within the app. Continued use of the app indicates acceptance of the updated
+          Terms.
         </Text>
+
+        {/* ================= PRIVACY ================= */}
 
         <Text style={styles.sectionTitle}>Privacy Policy</Text>
 
-        <Text style={styles.subSectionTitle}>1. Data Collection</Text>
+        <Text style={styles.subSectionTitle}>1. Data We Collect</Text>
         <Text style={styles.bodyText}>
-          We collect personal information (name, email, phone, gender), health data (medications),
-          and usage data to improve your experience.
+          We collect personal information such as name, email address, phone number, gender
+          (optional), and date of birth(optional). We also store user-entered health- related data
+          like medication reminders, uploaded documents, and educational questionnaire responses.
         </Text>
 
-        <Text style={styles.subSectionTitle}>2. Data Usage</Text>
+        <Text style={styles.subSectionTitle}>2. How We Use Data</Text>
         <Text style={styles.bodyText}>
-          Your data is used to provide personalized reminders, track health progress, and offer
-          relevant educational content.
+          Your data is used only to provide app functionality including reminders, document storage,
+          educational content, and to improve app performance. We do NOT use your data for medical
+          diagnosis or health assessment.
         </Text>
 
-        <Text style={styles.subSectionTitle}>3. Data Security</Text>
+        <Text style={styles.subSectionTitle}>3. Data Protection</Text>
         <Text style={styles.bodyText}>
-          We use industry-standard encryption and secure servers to protect your information. We
-          never sell your personal data to third parties.
+          We use industry-standard security practices including encryption and secure authentication
+          to protect your information. We do NOT sell your personal data to third parties.
         </Text>
 
-        <Text style={styles.subSectionTitle}>4. Your Rights</Text>
+        <Text style={styles.subSectionTitle}>4. Your Privacy Rights</Text>
         <View style={styles.bulletList}>
           <View style={styles.bulletItem}>
             <Text style={styles.bullet}>•</Text>
-            <Text style={styles.bulletText}>Access your data at any time</Text>
+            <Text style={styles.bulletText}>Access and update your personal information</Text>
           </View>
           <View style={styles.bulletItem}>
             <Text style={styles.bullet}>•</Text>
-            <Text style={styles.bulletText}>Request data deletion</Text>
+            <Text style={styles.bulletText}>Request account and data deletion</Text>
           </View>
           <View style={styles.bulletItem}>
             <Text style={styles.bullet}>•</Text>
-            <Text style={styles.bulletText}>Export your information</Text>
+            <Text style={styles.bulletText}>Export your personal data</Text>
           </View>
           <View style={styles.bulletItem}>
             <Text style={styles.bullet}>•</Text>
-            <Text style={styles.bulletText}>Opt-out of non-essential notifications</Text>
+            <Text style={styles.bulletText}>Control notification permissions</Text>
           </View>
         </View>
 
-        <Text style={styles.subSectionTitle}>5. Cookies & Tracking</Text>
+        <Text style={styles.subSectionTitle}>5. Contact Us</Text>
         <Text style={styles.bodyText}>
-          We use minimal tracking for analytics to improve app performance with your permission.
-        </Text>
-
-        <Text style={styles.subSectionTitle}>6. Contact Us</Text>
-        <Text style={styles.bodyText}>
-          For privacy concerns or data requests, email us at admin@glaucocare.in
+          For privacy concerns, data requests, or account deletion, contact us at:
+          {'\n'}heli.desai.glaucocare@gmail.com
         </Text>
 
         <View style={{ height: 40 }} />

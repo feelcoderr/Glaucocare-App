@@ -313,6 +313,7 @@ const LoginScreen = ({ navigation }) => {
       }
     }
   };
+
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <KeyboardAvoidingView
