@@ -20,8 +20,10 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "This app needs access to camera to capture profile photo and capture documents photos.",
-        "NSPhotoLibraryUsageDescription": "This app needs access to photo library to select medical documents."
-      }
+        "NSPhotoLibraryUsageDescription": "This app needs access to photo library to select medical documents.",
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "bundleIdentifier": "com.glaucocare.glaucocare"
     },
     "android": {
       "adaptiveIcon": {
@@ -31,7 +33,10 @@
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
-        "android.permission.WRITE_EXTERNAL_STORAGE"
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT"
       ],
       "package": "com.glaucocare.glaucocare",
       "googleServicesFile": "./google-services.json",

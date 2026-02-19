@@ -1,4 +1,26 @@
 import apiClient from './apiClient';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
+const getBaseURL = () => {
+  if (__DEV__) {
+    // Development mode
+    if (Platform.OS === 'android') {
+      // Android emulator
+      // return 'http://192.168.250.147:8000/api/v1';
+      return process.env.API_BASE_URL || 'https://api.glaucocare.in/api/v1';
+    } else {
+      // iOS simulator or other
+      // return 'http://192.168.250.147:8000/api/v1';
+      return process.env.API_BASE_URL || 'https://api.glaucocare.in/api/v1';
+    }
+  }
+  // Production mode
+  return 'https://api.glaucocare.in/api/v1';
+  // return 'http://192.168.250.147:8000/api/v1';
+};
+
+const API_BASE_URL = getBaseURL();
 
 export const authApi = {
   // Send OTP
@@ -125,11 +147,37 @@ export const authApi = {
     }
   },
 
+  // Verify if token is still valid
   verifyToken: async () => {
     try {
       const response = await apiClient.get('/auth/verify-token');
-      return response.data;
+      return response;
     } catch (error) {
+      console.error('❌ Token verification failed:', error);
+      throw error;
+    }
+  },
+
+  // Manual token refresh (if needed)
+  refreshToken: async () => {
+    try {
+      console.log('🔄 Manually refreshing token...');
+      const refreshToken = await AsyncStorage.getItem('refreshToken');
+
+      if (!refreshToken) {
+        throw new Error('No refresh token available');
+      }
+
+      const response = await axios.post(`${API_BASE_URL}/auth/refresh-token`, { refreshToken });
+
+      const { accessToken, refreshToken: newRefreshToken } = response.data.data;
+
+      await AsyncStorage.setItem('accessToken', accessToken);
+      await AsyncStorage.setItem('refreshToken', newRefreshToken);
+
+      return { accessToken, refreshToken: newRefreshToken };
+    } catch (error) {
+      console.error('❌ Manual token refresh failed:', error);
       throw error;
     }
   },

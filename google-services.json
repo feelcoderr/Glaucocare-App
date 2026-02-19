@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "762154220704-436gdo9ome6u02hrgl7jb3s3l341scrv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.glaucocare.glaucocare",
+            "certificate_hash": "fceee46095e8b3a0c50aa8bd74b403e00e9fbd85"
+          }
+        },
+        {
           "client_id": "762154220704-idqkrjtupk2d0ep6g6tnnk9gvtieumcm.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

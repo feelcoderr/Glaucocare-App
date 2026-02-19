@@ -13,10 +13,10 @@ import {
 } from 'react-native';
 import {
   useGoogleAuth,
-  handleGoogleSignIn,
   handleAppleSignIn,
   getAvailableAuthMethods,
 } from '../../services/auth/socialAuthService';
+import { handleGoogleSignIn } from '../../services/auth/googleAuthService';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { googleLogin, appleLogin } from '../../store/slices/authSlice';
@@ -254,21 +254,36 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
+  // const handleGooglePress = async () => {
+  //   try {
+  //     console.log('🔐 Google Sign-In Button Pressed');
+
+  //     if (!request) {
+  //       Alert.alert('Error', 'Google Sign-In is not ready. Please try again.');
+  //       return;
+  //     }
+
+  //     console.log('🔐 Opening Google Sign-In');
+  //     await promptAsync();
+  //   } catch (error) {
+  //     console.error('❌ Google Sign-In Error:', error);
+  //     Alert.alert('Error', 'Failed to sign in with Google');
+  //   }
+  // };
+
   const handleGooglePress = async () => {
-    try {
-      console.log('🔐 Google Sign-In Button Pressed');
+    const result = await handleGoogleSignIn();
 
-      if (!request) {
-        Alert.alert('Error', 'Google Sign-In is not ready. Please try again.');
-        return;
-      }
-
-      console.log('🔐 Opening Google Sign-In');
-      await promptAsync();
-    } catch (error) {
-      console.error('❌ Google Sign-In Error:', error);
-      Alert.alert('Error', 'Failed to sign in with Google');
+    if (!result.success) {
+      Alert.alert('Google Login Failed', result.error);
+      return;
     }
+
+    await dispatch(
+      googleLogin({
+        idToken: result.idToken,
+      })
+    ).unwrap();
   };
 
   const handleApplePress = async () => {
@@ -323,7 +338,7 @@ const LoginScreen = ({ navigation }) => {
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled">
           <View style={styles.content}>
-            <Text style={styles.title}>Walcome to Glaucocare</Text>
+            <Text style={styles.title}>Welcome to Glaucocare</Text>
             <Text style={styles.subtitle}>Good to see you! Lets get started.</Text>
 
             <View style={styles.form}>

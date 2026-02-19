@@ -13,6 +13,7 @@ import {
   Alert,
   ActivityIndicator,
   Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
@@ -223,96 +224,103 @@ const AddMedicationScreen = ({ navigation }) => {
         <View style={{ width: 24 }} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <Text style={styles.pageTitle}>Add New Medication</Text>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled">
+          <Text style={styles.pageTitle}>Add New Medication</Text>
 
-        {/* Medication Name */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Medication Name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter medication name"
-            placeholderTextColor={colors.textSecondary}
-            value={medicationName}
-            onChangeText={setMedicationName}
-          />
-        </View>
-
-        {/* Date Range */}
-        <View style={styles.dateRow}>
-          <View style={styles.dateGroup}>
-            <Text style={styles.label}>Start Date</Text>
-            <TouchableOpacity style={styles.dateInput} onPress={() => setShowStartPicker(true)}>
-              <Text style={styles.dateInputText}>{formatDate(startDate)}</Text>
-              <Ionicons name="calendar-outline" size={20} color={colors.textSecondary} />
-            </TouchableOpacity>
+          {/* Medication Name */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Medication Name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter medication name"
+              placeholderTextColor={colors.textSecondary}
+              value={medicationName}
+              onChangeText={setMedicationName}
+            />
           </View>
 
-          <View style={styles.dateGroup}>
-            <Text style={styles.label}>End Date</Text>
-            <TouchableOpacity style={styles.dateInput} onPress={() => setShowEndPicker(true)}>
-              <Text style={styles.dateInputText}>{formatDate(endDate)}</Text>
-              <Ionicons name="calendar-outline" size={20} color={colors.textSecondary} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Reminder Times */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Reminder Times</Text>
-          {reminderTimes.map((time, index) => (
-            <View key={index} style={styles.timeRow}>
-              <TouchableOpacity
-                style={styles.timeInput}
-                onPress={() => {
-                  setActiveTimeIndex(index);
-                  setShowTimePicker(true);
-                }}>
-                <Text style={[styles.timeInputText, !time && styles.placeholder]}>
-                  {time || 'Select time'}
-                </Text>
+          {/* Date Range */}
+          <View style={styles.dateRow}>
+            <View style={styles.dateGroup}>
+              <Text style={styles.label}>Start Date</Text>
+              <TouchableOpacity style={styles.dateInput} onPress={() => setShowStartPicker(true)}>
+                <Text style={styles.dateInputText}>{formatDate(startDate)}</Text>
+                <Ionicons name="calendar-outline" size={20} color={colors.textSecondary} />
               </TouchableOpacity>
-              {reminderTimes.length > 1 && (
-                <TouchableOpacity style={styles.removeButton} onPress={() => removeTime(index)}>
-                  <Ionicons name="close-circle" size={24} color="#EF4444" />
-                </TouchableOpacity>
-              )}
             </View>
-          ))}
-          <TouchableOpacity style={styles.addTimeButton} onPress={addAnotherTime}>
-            <Ionicons name="add" size={20} color={colors.primaryDark} />
-            <Text style={styles.addTimeText}>Add Another Time</Text>
+
+            <View style={styles.dateGroup}>
+              <Text style={styles.label}>End Date</Text>
+              <TouchableOpacity style={styles.dateInput} onPress={() => setShowEndPicker(true)}>
+                <Text style={styles.dateInputText}>{formatDate(endDate)}</Text>
+                <Ionicons name="calendar-outline" size={20} color={colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Reminder Times */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Reminder Times</Text>
+            {reminderTimes.map((time, index) => (
+              <View key={index} style={styles.timeRow}>
+                <TouchableOpacity
+                  style={styles.timeInput}
+                  onPress={() => {
+                    setActiveTimeIndex(index);
+                    setShowTimePicker(true);
+                  }}>
+                  <Text style={[styles.timeInputText, !time && styles.placeholder]}>
+                    {time || 'Select time'}
+                  </Text>
+                </TouchableOpacity>
+                {reminderTimes.length > 1 && (
+                  <TouchableOpacity style={styles.removeButton} onPress={() => removeTime(index)}>
+                    <Ionicons name="close-circle" size={24} color="#EF4444" />
+                  </TouchableOpacity>
+                )}
+              </View>
+            ))}
+            <TouchableOpacity style={styles.addTimeButton} onPress={addAnotherTime}>
+              <Ionicons name="add" size={20} color={colors.primaryDark} />
+              <Text style={styles.addTimeText}>Add Another Time</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Notes */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Note</Text>
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              placeholder="Add any additional notes..."
+              placeholderTextColor={colors.textSecondary}
+              value={notes}
+              onChangeText={setNotes}
+              multiline
+              numberOfLines={4}
+              textAlignVertical="top"
+            />
+          </View>
+
+          {/* Submit Button */}
+          <TouchableOpacity
+            style={[styles.submitButton, isLoading && styles.submitButtonDisabled]}
+            onPress={handleSubmit}
+            disabled={isLoading}>
+            {isLoading ? (
+              <ActivityIndicator color={colors.white} />
+            ) : (
+              <Text style={styles.submitButtonText}>Add New Medication</Text>
+            )}
           </TouchableOpacity>
-        </View>
-
-        {/* Notes */}
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Note</Text>
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            placeholder="Add any additional notes..."
-            placeholderTextColor={colors.textSecondary}
-            value={notes}
-            onChangeText={setNotes}
-            multiline
-            numberOfLines={4}
-            textAlignVertical="top"
-          />
-        </View>
-
-        {/* Submit Button */}
-        <TouchableOpacity
-          style={[styles.submitButton, isLoading && styles.submitButtonDisabled]}
-          onPress={handleSubmit}
-          disabled={isLoading}>
-          {isLoading ? (
-            <ActivityIndicator color={colors.white} />
-          ) : (
-            <Text style={styles.submitButtonText}>Add New Medication</Text>
-          )}
-        </TouchableOpacity>
-      </ScrollView>
-
+        </ScrollView>
+      </KeyboardAvoidingView>
       {/* Date/Time Pickers */}
       {showStartPicker && (
         <DateTimePicker
@@ -364,7 +372,8 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 16,
-    paddingBottom: 32,
+    paddingBottom: 40,
+    flexGrow: 1, // IMPORTANT
   },
   pageTitle: {
     fontSize: 20,

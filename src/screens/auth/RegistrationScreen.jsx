@@ -53,8 +53,12 @@ const RegistrationScreen = ({ navigation }) => {
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
+
     if (selectedDate) {
-      setFormData({ ...formData, dateOfBirth: selectedDate });
+      setFormData((prev) => ({
+        ...prev,
+        dateOfBirth: selectedDate,
+      }));
     }
   };
 
@@ -65,33 +69,84 @@ const RegistrationScreen = ({ navigation }) => {
     return `${day}-${month}-${year}`;
   };
 
+  const nameRegex = /^[A-Za-z\s-]+$/;
+
+  const validateName = (name, fieldName) => {
+    const trimmed = name.trim();
+
+    if (!trimmed) {
+      return `Please enter your ${fieldName}`;
+    }
+
+    if (trimmed.length < 2) {
+      return `${fieldName} must be at least 2 characters`;
+    }
+
+    if (!nameRegex.test(trimmed)) {
+      return `${fieldName} can only contain letters`;
+    }
+
+    return null;
+  };
+
+  const isAtLeast18 = (birthDate) => {
+    const today = new Date();
+    const minDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+
+    return birthDate <= minDate;
+  };
+
   const handleRegister = () => {
-    if (!formData.firstName.trim()) {
-      Alert.alert('Error', 'Please enter your first name');
+    // First Name Validation
+    const firstNameError = validateName(formData.firstName, 'First name');
+    if (firstNameError) {
+      Alert.alert('Error', firstNameError);
       return;
     }
-    // if (!formData.dateOfBirth) {
-    //   Alert.alert('Error', 'Please enter your date of birth');
-    //   return;
-    // }
-    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(formData.email)) {
-      Alert.alert('Error', 'Please enter your valid email');
+
+    // Last Name Validation
+    const lastNameError = validateName(formData.lastName, 'Last name');
+    if (lastNameError) {
+      Alert.alert('Error', lastNameError);
       return;
     }
-    // if (!formData.gender) {
-    //   Alert.alert('Error', 'Please enter your gender');
-    //   return;
-    // }
-    if (!formData.lastName.trim()) {
-      Alert.alert('Error', 'Please enter your last name');
+
+    // Email Validation
+    if (!formData.email?.trim()) {
+      Alert.alert('Error', 'Please enter your email');
       return;
     }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(formData.email)) {
+      Alert.alert('Error', 'Please enter a valid email address');
+      return;
+    }
+
+    // Date of Birth Validation
+    if (!formData.dateOfBirth) {
+      Alert.alert('Error', 'Please select your date of birth');
+      return;
+    }
+
+    if (!isAtLeast18(formData.dateOfBirth)) {
+      Alert.alert('Error', 'You must be at least 18 years old');
+      return;
+    }
+
+    // Gender Validation
+    if (!formData.gender) {
+      Alert.alert('Error', 'Please select your gender');
+      return;
+    }
+
+    // Terms Validation
     if (!termsAccepted) {
       Alert.alert('Error', 'Please accept terms and conditions');
       return;
     }
 
     const fullname = `${formData.firstName.trim()} ${formData.lastName.trim()}`;
+
     dispatch(
       completeRegistration({
         fullname,
@@ -143,7 +198,7 @@ const RegistrationScreen = ({ navigation }) => {
                   keyboardType="email-address"
                   autoCapitalize="none"
                   value={formData.email}
-                  onChangeText={(text) => setFormData({ ...formData, email: text })}
+                  onChangeText={(text) => setFormData({ ...formData, email: text.toLowerCase() })}
                 />
                 {formData.email &&
                   /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(formData.email) &&
@@ -171,7 +226,13 @@ const RegistrationScreen = ({ navigation }) => {
                   mode="date"
                   display="default"
                   onChange={handleDateChange}
-                  maximumDate={new Date()}
+                  maximumDate={
+                    new Date(
+                      new Date().getFullYear() - 18,
+                      new Date().getMonth(),
+                      new Date().getDate()
+                    )
+                  }
                 />
               )}
 

@@ -6,7 +6,7 @@ import * as AppleAuthentication from 'expo-apple-authentication';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 import { Platform } from 'react-native';
-
+import { makeRedirectUri } from 'expo-auth-session';
 WebBrowser.maybeCompleteAuthSession();
 
 // ============================================================================
@@ -16,18 +16,19 @@ WebBrowser.maybeCompleteAuthSession();
 // Replace these with your actual Google OAuth Client IDs
 const GOOGLE_CONFIG = {
   iosClientId: 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com',
-  androidClientId: '762154220704-pqqi9h6jhra2c63capp4l196sss92q2i.apps.googleusercontent.com',
+  androidClientId: '762154220704-6tellhg6487140lri4igog49aumvpjd3.apps.googleusercontent.com',
   webClientId: '762154220704-q6cm8l53seatd93ahd66dq632f8p999q.apps.googleusercontent.com',
 };
 
 // ============================================================================
 // GOOGLE SIGN-IN
 // ============================================================================
-
+const uri = makeRedirectUri({ scheme: 'glaucocare' });
+console.log('Redirect URI:', uri);
 export const useGoogleAuth = () => {
   const [request, response, promptAsync] = Google.useAuthRequest({
     iosClientId: GOOGLE_CONFIG.iosClientId,
-    androidClientId: GOOGLE_CONFIG.androidClientId,
+    androidClientId: '762154220704-6tellhg6487140lri4igog49aumvpjd3.apps.googleusercontent.com',
     webClientId: GOOGLE_CONFIG.webClientId,
   });
 

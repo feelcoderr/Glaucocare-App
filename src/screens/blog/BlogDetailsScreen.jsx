@@ -175,14 +175,12 @@ const BlogDetailScreen = ({ route, navigation }) => {
               </View>
               <View style={styles.tipItem}>
                 <Text style={styles.tipBullet}>•</Text>
-                <Text style={styles.tipText}>
-                  Know your family history; glaucoma is hereditary.
-                </Text>
+                <Text style={styles.tipText}>Know your family history glaucoma is hereditary.</Text>
               </View>
               <View style={styles.tipItem}>
                 <Text style={styles.tipBullet}>•</Text>
                 <Text style={styles.tipText}>
-                  Watch for subtle signs like blurry vision or eye pressure. Invasive options
+                  Watch for subtle signs like blurry vision or eye pressure and Invasive options.
                 </Text>
               </View>
               <View style={styles.tipItem}>

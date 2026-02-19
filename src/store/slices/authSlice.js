@@ -154,6 +154,14 @@ export const checkAuthStatus = createAsyncThunk(
   }
 );
 
+// In your authSlice.js
+export const forceLogout = createAsyncThunk('auth/forceLogout', async (_, { dispatch }) => {
+  await AsyncStorage.multiRemove(['accessToken', 'refreshToken', 'user']);
+  // Navigate to login screen
+  // You might want to show a toast: "Session expired, please login again"
+  return null;
+});
+
 const initialState = {
   user: null,
   accessToken: null,
